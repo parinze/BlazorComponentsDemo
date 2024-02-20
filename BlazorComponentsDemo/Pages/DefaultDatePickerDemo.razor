@@ -1,0 +1,27 @@
+﻿@page "/defaultdatepicker"
+
+<h3>Default DatePicker Demo</h3>
+
+<div class="row">
+    <div class="col-3 mt-3">
+        <DefaultDatePicker
+            @bind-DateValue="selectedDate"
+            @bind-DateValue:event="@HandleDateChange"
+            TValue="DateTime" 
+            classes="@("form-control")"
+            styles="@("")" />
+    </div>
+    <div class="col-3 mt-3">
+        <p>Selected Date: @selectedDate.ToShortDateString()</p>
+    </div>
+</div>
+
+@code {
+    protected DateTime selectedDate;
+
+    private void HandleDateChange(DateTime date)
+    {
+        selectedDate = date;
+        Console.WriteLine($"Parent Component: Selected date changed to {selectedDate.ToShortDateString()}");
+    }
+}

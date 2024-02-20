@@ -1,0 +1,135 @@
+﻿@typeparam TType
+@using BlazorComponentsDemo.ComponentsLibrary.Models
+
+@if (Data == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+	<RadzenGrid 
+		AllowFiltering="true"
+		FilterMode="FilterMode.Advanced"
+		LogicalFilterOperator="LogicalFilterOperator.Or"
+		FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+		AllowSorting="true"
+		AllowColumnResize="true"
+		AllowPaging="true" 
+		PageSize="4" 
+		Data="@Data"
+		TItem="@TType"
+		ColumnWidth="150px">
+		<Columns>
+			@foreach (var property in typeof(TType).GetProperties())
+			{
+				@if (property.PropertyType.FullName == typeof(DateTime).FullName
+						|| property.PropertyType.FullName == typeof(DateTime?).FullName
+						|| property.PropertyType.FullName == typeof(DateTimeOffset).FullName
+						|| property.PropertyType.FullName == typeof(DateTimeOffset?).FullName)
+				{
+					<RadzenGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" FormatString="{0:MM/dd/yyyy HH:mm}" />
+				}
+				else if (property.Name == BadgeColumnName)
+				{
+					<RadzenGridColumn TItem="TType" Property="@BadgeColumnName" Title="@PropertyToHeaderName[BadgeColumnName]">
+						<Template>
+							@{
+								var properties = context.GetType().GetProperties();
+								var badgeColumnProperty = properties.Single(p => p.Name == BadgeColumnName);
+								var propertyName = badgeColumnProperty.Name;
+								var propertyValue = badgeColumnProperty.GetValue(context);
+
+								if (propertyName == BadgeColumnName)
+								{
+									string chosenColorBadgeStyle = "";
+									if (GreenBadgeWords.Contains(propertyValue.ToString()))
+									{
+										chosenColorBadgeStyle = greenBadgeStyle;
+									}
+									else if (RedBadgeWords.Contains(propertyValue.ToString()))
+									{
+										chosenColorBadgeStyle = redBadgeStyle;
+									}
+									else
+									{
+										chosenColorBadgeStyle = grayBadgeStyle;
+									}
+
+									<div style="@baseBadgeStyle @chosenColorBadgeStyle">
+										@propertyValue
+									</div>
+								}
+								
+							}
+						</Template>
+					</RadzenGridColumn>
+
+				}
+				else
+				{
+					<RadzenGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" />
+				}
+			}
+
+			@* <RadzenGridColumn TItem="TestData" Property="Date" Title="Date" FormatString="{0:MM/dd/yyyy HH:mm}"></RadzenGridColumn>
+			<RadzenGridColumn TItem="TestData" Property="Type" Title="Type"></RadzenGridColumn>
+			<RadzenGridColumn TItem="TestData" Property="Patient" Title="Patient"></RadzenGridColumn>
+			<RadzenGridColumn TItem="TestData" Property="Location" Title="Location"></RadzenGridColumn>
+			<RadzenGridColumn TItem="TestData" Property="SMS" Title="SMS"></RadzenGridColumn>
+			<RadzenGridColumn TItem="TestData" Property="Email" Title="Email"></RadzenGridColumn>
+			<RadzenGridColumn TItem="TestData" Property="View" Title="View"></RadzenGridColumn>
+			<RadzenGridColumn TItem="TestData" Property="LastView" Title="Last View" FormatString="{0:MM/dd/yyyy HH:mm}"></RadzenGridColumn>
+			<RadzenGridColumn TItem="TestData" Property="Status" Title="Status">
+				<Template>
+					@if (context.Status == "Active")
+					{
+						chosenColorBadgeStyle = greenBadgeStyle;
+					}
+					else if (context.Status == "Expired")
+					{
+						chosenColorBadgeStyle = redBadgeStyle;
+					}
+					else
+					{
+						chosenColorBadgeStyle = grayBadgeStyle;
+					}
+					<div style="@baseBadgeStyle @chosenColorBadgeStyle">
+							@context.Status
+					</div>
+				</Template>
+			</RadzenGridColumn>
+			<RadzenGridColumn TItem="TestData" Property="Outcome" Title="Outcome"></RadzenGridColumn>
+			<RadzenGridColumn TItem="TestData" Property="OutcomeDate" Title="Outcome Date" FormatString="{0:MM/dd/yyyy HH:mm}"></RadzenGridColumn>
+			<RadzenGridColumn TItem="TestData" Property="SentBy" Title="Sent By"></RadzenGridColumn>
+			<RadzenGridColumn TItem="TestData" Property="Expiration" Title="Expiration" FormatString="{0:MM/dd/yyyy HH:mm}"></RadzenGridColumn> *@
+			
+			@* WEATHER *@
+			@* <RadzenGridColumn TItem="@TType" Property="Date" Title="Date"></RadzenGridColumn>
+			<RadzenGridColumn TItem="@TType" Property="TemperatureC" Title="Temp (C)"></RadzenGridColumn>
+			<RadzenGridColumn TItem="@TType" Property="Summary" Title="Summary"></RadzenGridColumn>
+			<RadzenGridColumn TItem="@TType" Property="TemperatureF" Title="Temp (F)"></RadzenGridColumn> *@
+		</Columns>
+	</RadzenGrid>
+}
+@code {
+	/// <summary>
+	/// An array of <typeparamref name="TType"/> objects.
+	/// </summary>
+	[Parameter][EditorRequired] public TType[]? Data { get; set; }
+
+	/// <summary>
+	/// Dictionary mapping of the property names of <typeparamref name="TType"/> class to desired header names.
+	/// <para>E.g. Property: PurchaseDate > {"PurchaseDate", "Purchase Date"}</para>
+	/// </summary>
+	[Parameter][EditorRequired] public Dictionary<string, string> PropertyToHeaderName { get; set; } = new();
+
+	[Parameter] public string? BadgeColumnName { get; set; }
+	[Parameter] public string[]? GreenBadgeWords { get; set; }
+	[Parameter] public string[]? RedBadgeWords { get; set; }
+
+	// Badge styles for Status column
+	string baseBadgeStyle = "border-radius:20px;text-align:center;";
+	string greenBadgeStyle = "background-color:#E1F1ED;color:#139072;";
+	string redBadgeStyle = "background-color:#FCE9EA;color:#E53E44;";
+	string grayBadgeStyle = "background-color:#DAD9D9;color:#636262;";
+}

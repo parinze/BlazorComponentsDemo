@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BlazorDateRangePicker" Version="5.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.15" />
+    <PackageReference Include="Radzen.Blazor" Version="4.25.1" />
+  </ItemGroup>
+
+</Project>

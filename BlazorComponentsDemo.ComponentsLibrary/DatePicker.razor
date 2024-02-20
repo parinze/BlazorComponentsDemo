@@ -1,0 +1,46 @@
+﻿@typeparam TDateType
+@inherits DatePickerModel<TDateType>
+
+@using BlazorDateRangePicker
+
+<DateRangePicker ShowOnlyOneCalendar="true"
+				 SingleDatePicker="@EnableSingleDateSelection"
+				 AutoApply="true"
+				 DateFormat="@($"MM/dd/yyyy")"
+				 OnRangeSelect="OnRangeSelect"
+				 @bind-StartDate="StartDate"
+				 @bind-EndDate="EndDate">
+
+	<PickerTemplate>
+		<div id="@context.Id" class="defaultStylePickerBox" @onclick="context.Toggle">
+			<span>
+				@if (context.TStartDate == null && context.TEndDate == null)
+				{
+					<span>@PlaceholderText</span>
+				}
+				@if (EnableSingleDateSelection == false && context.TStartDate != null && context.TEndDate == null)
+				{
+					<span>@context.TStartDate.Value.ToString("MM/dd/yyyy") - </span>
+				}
+				else
+				{
+					<span>
+						@context.FormattedRange
+					</span>
+				}
+			</span>
+
+			<i class="oi oi-calendar" style="float:right"></i>
+		</div>
+
+	</PickerTemplate>
+	<ButtonsTemplate>
+		@if (EnableSingleDateSelection == false)
+		{
+			<button id="clear-btn" class="btn btn-sm"
+					@onclick="@(e => ClearPicker(e, context))" type="button">
+				Clear
+			</button>
+		}
+	</ButtonsTemplate>
+</DateRangePicker>

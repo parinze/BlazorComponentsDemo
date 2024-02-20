@@ -1,0 +1,29 @@
+﻿@page "/daterangepicker"
+
+<h3>BlazorDateRangePicker Demo</h3>
+<div class="row">
+    <div class="col-2">
+	    <DatePicker 
+            EnableSingleDateSelection=false
+            PlaceholderText="Select Date"
+            StartDateValue="selectedDateStart"
+            EndDateValue="selectedDateEnd" 
+            TDateType="DateTime?"
+            OnDateRangeValueChanged="HandleDateRangeChange" />
+    </div>
+</div>
+<div class="col-3 mt-3">
+    <p>Selected Date (Start): @selectedDateStart.ToString()</p>
+    <p>Selected Date (End): @selectedDateEnd.ToString()</p>
+</div>
+
+@code {
+	public DateTime? selectedDateStart;
+	public DateTime? selectedDateEnd;
+
+	protected void HandleDateRangeChange((DateTime? startDate, DateTime? endDate) t)
+	{
+		selectedDateStart = t.startDate;
+		selectedDateEnd = t.endDate;
+	}
+}

@@ -1,0 +1,64 @@
+﻿@page "/radzendatagrid"
+@using BlazorComponentsDemo.ComponentsLibrary.Models
+@inject HttpClient Http
+
+<h3>Radzen DataGrid Demo</h3>
+
+@if (testData == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <DataGridRadzen 
+    Data=@testData
+    TType="TestData"
+    PropertyToHeaderName="@propertyToHeaderNames"
+    BadgeColumnName="@BadgeColumnName" 
+    GreenBadgeWords="@GreenBadgeWords"
+    RedBadgeWords="@RedBadgeWords"/>
+}
+
+@code {
+    private TestData[]? testData;
+    private string BadgeColumnName = "Status";
+
+    Dictionary<string, string> propertyToHeaderNames = new()
+    {
+        {"Id", "ID"},
+        {"Date", "Date"},
+        {"Type", "Type"},
+        {"Patient", "Patient"},
+        {"Location", "Location"},
+        {"SMS", "SMS"},
+        {"Email", "Email"},
+        {"View", "View"},
+        {"LastView", "Last View"},
+        {"Status", "Status"},
+        {"Outcome", "Outcome"},
+        {"OutcomeDate", "Outcome Date"},
+        {"SentBy", "Sent By"},
+        {"Expiration", "Expiration"}
+    };
+
+    private string[] GreenBadgeWords = new string[] { "Active" };
+    private string[] RedBadgeWords = new string[] { "Expired" };
+
+
+    // private WeatherForecast[]? forecasts;
+
+    // Property, Human-readable header
+    // Dictionary<string, string> dictionary = new()
+    // {
+    //     { "Date", "Date" },
+    //     { "TemperatureC", "Temp (C)" },
+    //     { "Summary", "Summary" },
+    //     { "TemperatureF", "Temp (F)" }
+    // };
+
+    protected override async Task OnInitializedAsync()
+    {
+        testData = await Http.GetFromJsonAsync<TestData[]>("sample-data/testsampledata.json");
+        // forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+    }
+}

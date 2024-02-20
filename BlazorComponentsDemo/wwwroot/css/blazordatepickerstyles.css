@@ -1,0 +1,49 @@
+﻿div.defaultStylePickerBox {
+    background: #fff !important;
+    cursor: pointer !important;
+    padding: .45rem 10px !important;
+    border: 1px solid #ccc !important;
+    border-radius: 5px !important;
+    height: calc(1rem + (0.575rem * 2) + 2px) !important;
+}
+
+.daterangepicker th {
+    color: #797382 !important;
+}
+
+/* For all dates on date picker calendar view */
+.daterangepicker td.available {
+    color: #333333 !important;
+}
+
+/* For current date */
+.daterangepicker .today {
+    font-weight: 900 !important;
+}
+
+/* For range of dates in between the two selected dates */
+.daterangepicker td.in-range {
+    background-color: #E3ECFC !important;
+    color: #333333 !important;
+}
+
+/* For selected dates on multi-select and single-select date pickers */
+.daterangepicker td.active,
+.daterangepicker td.active.start-date.in-range,
+.daterangepicker td.active.end-date.in-range,
+.daterangepicker td.start-date.end-date,
+.daterangepicker td.start-date.end-date {
+    background-color: #007AC3 !important;
+    color: #FFFFFF !important;
+    font-weight: 900 !important;
+    border-radius: 4px 4px 4px 4px !important;
+}
+
+/* For clear button */
+.daterangepicker.auto-apply .drp-buttons {
+    display: block !important;
+}
+
+.daterangepicker #clear-btn:hover {
+    background-color: #E3ECFC !important;
+}
