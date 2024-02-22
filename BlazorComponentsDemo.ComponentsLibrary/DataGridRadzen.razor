@@ -1,5 +1,6 @@
 ﻿@typeparam TType
-@using BlazorComponentsDemo.ComponentsLibrary.Models
+@* @inject IJSRuntime JS *@
+@* @implements IAsyncDisposable *@
 
 @if (Data == null)
 {
@@ -10,13 +11,11 @@ else
 	<RadzenDataGrid
 		AllowColumnResize="true"
 		AllowSorting="true"
-		AllowPaging="true" 
+		AllowPaging="true"
+		PageSizeOptions="@PageSizeOptions"
 		ShowPagingSummary="true"
+		PagingSummaryFormat="@pagingSummaryFormat"
 		AllowAlternatingRows="true"
-		AllowRowSelectOnRowClick="true"
-		SelectionMode="DataGridSelectionMode.Single"
-		@bind-Value=@selectedItems
-		PageSize="4" 
 		Data="@Data"
 		TItem="@TType"
 		ColumnWidth="100px">
@@ -71,38 +70,6 @@ else
 					<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" />
 				}
 			}
-
-			@* <RadzenGridColumn TItem="TestData" Property="Date" Title="Date" FormatString="{0:MM/dd/yyyy HH:mm}"></RadzenGridColumn>
-			<RadzenGridColumn TItem="TestData" Property="Type" Title="Type"></RadzenGridColumn>
-			<RadzenGridColumn TItem="TestData" Property="Patient" Title="Patient"></RadzenGridColumn>
-			<RadzenGridColumn TItem="TestData" Property="Location" Title="Location"></RadzenGridColumn>
-			<RadzenGridColumn TItem="TestData" Property="SMS" Title="SMS"></RadzenGridColumn>
-			<RadzenGridColumn TItem="TestData" Property="Email" Title="Email"></RadzenGridColumn>
-			<RadzenGridColumn TItem="TestData" Property="View" Title="View"></RadzenGridColumn>
-			<RadzenGridColumn TItem="TestData" Property="LastView" Title="Last View" FormatString="{0:MM/dd/yyyy HH:mm}"></RadzenGridColumn>
-			<RadzenGridColumn TItem="TestData" Property="Status" Title="Status">
-				<Template>
-					@if (context.Status == "Active")
-					{
-						chosenColorBadgeStyle = greenBadgeStyle;
-					}
-					else if (context.Status == "Expired")
-					{
-						chosenColorBadgeStyle = redBadgeStyle;
-					}
-					else
-					{
-						chosenColorBadgeStyle = grayBadgeStyle;
-					}
-					<div style="@baseBadgeStyle @chosenColorBadgeStyle">
-							@context.Status
-					</div>
-				</Template>
-			</RadzenGridColumn>
-			<RadzenGridColumn TItem="TestData" Property="Outcome" Title="Outcome"></RadzenGridColumn>
-			<RadzenGridColumn TItem="TestData" Property="OutcomeDate" Title="Outcome Date" FormatString="{0:MM/dd/yyyy HH:mm}"></RadzenGridColumn>
-			<RadzenGridColumn TItem="TestData" Property="SentBy" Title="Sent By"></RadzenGridColumn>
-			<RadzenGridColumn TItem="TestData" Property="Expiration" Title="Expiration" FormatString="{0:MM/dd/yyyy HH:mm}"></RadzenGridColumn> *@
 			
 			@* WEATHER *@
 			@* <RadzenGridColumn TItem="@TType" Property="Date" Title="Date"></RadzenGridColumn>
@@ -116,7 +83,7 @@ else
 	/// <summary>
 	/// An array of <typeparamref name="TType"/> objects.
 	/// </summary>
-	[Parameter][EditorRequired] public List<TType>? Data { get; set; }
+	[Parameter][EditorRequired] public IEnumerable<TType>? Data { get; set; }
 
 	/// <summary>
 	/// Dictionary mapping of the property names of <typeparamref name="TType"/> class to desired header names.
@@ -124,15 +91,45 @@ else
 	/// </summary>
 	[Parameter][EditorRequired] public Dictionary<string, string> PropertyToHeaderName { get; set; } = new();
 
+
 	[Parameter] public string? BadgeColumnName { get; set; }
 	[Parameter] public string[]? GreenBadgeWords { get; set; }
 	[Parameter] public string[]? RedBadgeWords { get; set; }
 
-	IList<TType> selectedItems;
+
+	[Parameter] public IEnumerable<int> PageSizeOptions { get; set; } = new int[] { 10, 20, 50, 100, 500 };
+
+	string pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
+
+	IList<TType> selectedItems = new List<TType>();
 
 	// Badge styles for Status column
 	string baseBadgeStyle = "border-radius:20px;text-align:center;";
 	string greenBadgeStyle = "background-color:#E5F2E8;color:#28A745;";
-	string redBadgeStyle = "background-color:#FAE5E5;color:#FF3D3D;";
+	string redBadgeStyle = "background-color:#FAE5E5;color:#DC5151;";
 	string grayBadgeStyle = "background-color:#DAD9D9;color:#636262;";
+
+	// private IJSObjectReference? jsModule;
+
+	// protected override async Task OnAfterRenderAsync(bool firstRender)
+	// {
+	// 	jsModule = await JS.InvokeAsync<IJSObjectReference>("import", "./scripts/radzendatagridscript.js");
+
+	// 	if(firstRender)
+	// 	{
+	// 		// By default, RadzenDataGrid will initially display '10' for the page size dropdown label on page load.
+	// 		// This Javascript call sets the label to the correct minimum page size number.
+	// 		int minPageSizeOption = PageSizeOptions.FirstOrDefault();
+	// 		Console.WriteLine("FIRST RENDER : ONAFTERRENDER");
+	// 		await jsModule.InvokeVoidAsync("changeDropdownLabelText", $"{minPageSizeOption}");			
+	// 	}
+	// }
+
+	// async ValueTask IAsyncDisposable.DisposeAsync()
+	// {
+	// 	if (jsModule is not null)
+	// 	{
+	// 		await jsModule.DisposeAsync();
+	// 	}
+	// }
 }
