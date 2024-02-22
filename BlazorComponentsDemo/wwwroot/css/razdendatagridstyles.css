@@ -1,0 +1,16 @@
+﻿.rz-datatable-thead th .rz-column-title, .rz-grid-table thead th .rz-column-title {
+    color: #007ac3 !important;
+}
+
+tr.rz-data-row:hover {
+    background-color: #cfdee7 !important;
+}
+
+tr.rz-state-highlight.rz-data-row {
+    background-color: #007ac3 !important;
+    color: white;
+}
+
+a.rz-paginator-page.rz-paginator-element.rz-state-active {
+    color: #007ac3 !important;
+}

@@ -11,16 +11,16 @@
 else
 {
     <DataGridRadzen 
-    Data=@testData
-    TType="TestData"
-    PropertyToHeaderName="@propertyToHeaderNames"
-    BadgeColumnName="@BadgeColumnName" 
-    GreenBadgeWords="@GreenBadgeWords"
-    RedBadgeWords="@RedBadgeWords"/>
+        Data=@testData
+        TType="TestData"
+        PropertyToHeaderName="@propertyToHeaderNames"
+        BadgeColumnName="@BadgeColumnName" 
+        GreenBadgeWords="@GreenBadgeWords"
+        RedBadgeWords="@RedBadgeWords"/>
 }
 
 @code {
-    private TestData[]? testData;
+    private List<TestData>? testData;
     private string BadgeColumnName = "Status";
 
     Dictionary<string, string> propertyToHeaderNames = new()
@@ -58,7 +58,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        testData = await Http.GetFromJsonAsync<TestData[]>("sample-data/testsampledata.json");
+        testData = await Http.GetFromJsonAsync<List<TestData>>("sample-data/testsampledata.json");
         // forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
     }
 }

@@ -7,18 +7,19 @@
 }
 else
 {
-	<RadzenGrid 
-		AllowFiltering="true"
-		FilterMode="FilterMode.Advanced"
-		LogicalFilterOperator="LogicalFilterOperator.Or"
-		FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-		AllowSorting="true"
+	<RadzenDataGrid
 		AllowColumnResize="true"
+		AllowSorting="true"
 		AllowPaging="true" 
+		ShowPagingSummary="true"
+		AllowAlternatingRows="true"
+		AllowRowSelectOnRowClick="true"
+		SelectionMode="DataGridSelectionMode.Single"
+		@bind-Value=@selectedItems
 		PageSize="4" 
 		Data="@Data"
 		TItem="@TType"
-		ColumnWidth="150px">
+		ColumnWidth="100px">
 		<Columns>
 			@foreach (var property in typeof(TType).GetProperties())
 			{
@@ -27,11 +28,11 @@ else
 						|| property.PropertyType.FullName == typeof(DateTimeOffset).FullName
 						|| property.PropertyType.FullName == typeof(DateTimeOffset?).FullName)
 				{
-					<RadzenGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" FormatString="{0:MM/dd/yyyy HH:mm}" />
+					<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" FormatString="{0:MM/dd/yyyy HH:mm}" />
 				}
 				else if (property.Name == BadgeColumnName)
 				{
-					<RadzenGridColumn TItem="TType" Property="@BadgeColumnName" Title="@PropertyToHeaderName[BadgeColumnName]">
+					<RadzenDataGridColumn TItem="TType" Property="@BadgeColumnName" Title="@PropertyToHeaderName[BadgeColumnName]">
 						<Template>
 							@{
 								var properties = context.GetType().GetProperties();
@@ -62,12 +63,12 @@ else
 								
 							}
 						</Template>
-					</RadzenGridColumn>
+					</RadzenDataGridColumn>
 
 				}
 				else
 				{
-					<RadzenGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" />
+					<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" />
 				}
 			}
 
@@ -109,13 +110,13 @@ else
 			<RadzenGridColumn TItem="@TType" Property="Summary" Title="Summary"></RadzenGridColumn>
 			<RadzenGridColumn TItem="@TType" Property="TemperatureF" Title="Temp (F)"></RadzenGridColumn> *@
 		</Columns>
-	</RadzenGrid>
+	</RadzenDataGrid>
 }
 @code {
 	/// <summary>
 	/// An array of <typeparamref name="TType"/> objects.
 	/// </summary>
-	[Parameter][EditorRequired] public TType[]? Data { get; set; }
+	[Parameter][EditorRequired] public List<TType>? Data { get; set; }
 
 	/// <summary>
 	/// Dictionary mapping of the property names of <typeparamref name="TType"/> class to desired header names.
@@ -127,9 +128,11 @@ else
 	[Parameter] public string[]? GreenBadgeWords { get; set; }
 	[Parameter] public string[]? RedBadgeWords { get; set; }
 
+	IList<TType> selectedItems;
+
 	// Badge styles for Status column
 	string baseBadgeStyle = "border-radius:20px;text-align:center;";
-	string greenBadgeStyle = "background-color:#E1F1ED;color:#139072;";
-	string redBadgeStyle = "background-color:#FCE9EA;color:#E53E44;";
+	string greenBadgeStyle = "background-color:#E5F2E8;color:#28A745;";
+	string redBadgeStyle = "background-color:#FAE5E5;color:#FF3D3D;";
 	string grayBadgeStyle = "background-color:#DAD9D9;color:#636262;";
 }

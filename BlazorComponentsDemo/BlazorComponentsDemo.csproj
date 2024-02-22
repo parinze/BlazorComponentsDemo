@@ -10,7 +10,7 @@
     <PackageReference Include="BlazorDateRangePicker" Version="5.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.15" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.15" PrivateAssets="all" />
-    <PackageReference Include="Radzen.Blazor" Version="4.25.1" />
+    <PackageReference Include="Radzen.Blazor" Version="4.16.0" />
   </ItemGroup>
 
   <ItemGroup>

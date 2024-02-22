@@ -1,0 +1,93 @@
+﻿@page "/radzendatagridtest"
+@using BlazorComponentsDemo.ComponentsLibrary.Models
+@inject HttpClient Http
+
+<h3>Radzen DataGrid Demo</h3>
+
+@if (testData == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <RadzenDataGrid 
+        AllowPaging="true" 
+        PageSize="3" 
+        AllowSorting="true"
+        AllowFiltering="true"
+        FilterMode="FilterMode.Advanced"
+        LogicalFilterOperator="LogicalFilterOperator.Or"
+        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+        Data="@testData" TItem="TestData" 
+        ColumnWidth="200px"
+        AllowColumnResize="true"
+        AllowAlternatingRows="true"
+        SelectionMode="DataGridSelectionMode.Single"
+        @bind-Value=@selectedTestDataItems>
+    <Columns>
+            <RadzenDataGridColumn TItem="TestData" Property="Date" Title="Date" />
+            <RadzenDataGridColumn TItem="TestData" Property="Type" Title="Type" />
+            <RadzenDataGridColumn TItem="TestData" Property="Patient" Title="Patient" />
+            <RadzenDataGridColumn TItem="TestData" Property="Location" Title="Location" />
+            <RadzenDataGridColumn TItem="TestData" Property="SMS" Title="SMS" />
+            <RadzenDataGridColumn TItem="TestData" Property="View" Title="View" />
+            <RadzenDataGridColumn TItem="TestData" Property="LastView" Title="LastView" />
+            <RadzenDataGridColumn TItem="TestData" Property="Status" Title="Status" />
+            <RadzenDataGridColumn TItem="TestData" Property="Outcome" Title="Outcome" />
+            <RadzenDataGridColumn TItem="TestData" Property="OutcomeDate" Title="OutcomeDate" />
+            <RadzenDataGridColumn TItem="TestData" Property="SentBy" Title="SentBy" />
+            <RadzenDataGridColumn TItem="TestData" Property="Expiration" Title="Expiration" />
+    </Columns>
+</RadzenDataGrid>
+}
+
+@code {
+    private List<TestData>? testData;
+    private string BadgeColumnName = "Status";
+
+    IList<TestData> selectedTestDataItems;
+
+    void ClearSelection()
+    {
+        selectedTestDataItems = null;
+    }
+
+    Dictionary<string, string> propertyToHeaderNames = new()
+    {
+        {"Id", "ID"},
+        {"Date", "Date"},
+        {"Type", "Type"},
+        {"Patient", "Patient"},
+        {"Location", "Location"},
+        {"SMS", "SMS"},
+        {"Email", "Email"},
+        {"View", "View"},
+        {"LastView", "Last View"},
+        {"Status", "Status"},
+        {"Outcome", "Outcome"},
+        {"OutcomeDate", "Outcome Date"},
+        {"SentBy", "Sent By"},
+        {"Expiration", "Expiration"}
+    };
+
+    private string[] GreenBadgeWords = new string[] { "Active" };
+    private string[] RedBadgeWords = new string[] { "Expired" };
+
+
+    // private WeatherForecast[]? forecasts;
+
+    // Property, Human-readable header
+    // Dictionary<string, string> dictionary = new()
+    // {
+    //     { "Date", "Date" },
+    //     { "TemperatureC", "Temp (C)" },
+    //     { "Summary", "Summary" },
+    //     { "TemperatureF", "Temp (F)" }
+    // };
+
+    protected override async Task OnInitializedAsync()
+    {
+        testData = await Http.GetFromJsonAsync<List<TestData>>("sample-data/testsampledata.json");
+        // forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+    }
+}
