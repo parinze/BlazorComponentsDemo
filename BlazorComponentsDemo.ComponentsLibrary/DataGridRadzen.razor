@@ -1,10 +1,11 @@
 ﻿@typeparam TType
-@* @inject IJSRuntime JS *@
-@* @implements IAsyncDisposable *@
 
-@if (Data == null)
+@if (isLoading == true)
 {
-    <p><em>Loading...</em></p>
+	<div class="datagridspinnercontainer">
+		<img src="assets/images/datagridspinner.svg" class="datagridspinner">
+		<div class="datagridloading">Loading</div>
+	</div>
 }
 else
 {
@@ -18,7 +19,8 @@ else
 		AllowAlternatingRows="true"
 		Data="@Data"
 		TItem="@TType"
-		ColumnWidth="100px">
+		ColumnWidth="100px"
+		GridLines="Radzen.DataGridGridLines.Both">
 		<Columns>
 			@foreach (var property in typeof(TType).GetProperties())
 			{
@@ -97,7 +99,7 @@ else
 	[Parameter] public string[]? RedBadgeWords { get; set; }
 
 
-	[Parameter] public IEnumerable<int> PageSizeOptions { get; set; } = new int[] { 10, 20, 50, 100, 500 };
+	private IEnumerable<int> PageSizeOptions { get; set; } = new int[] { 10, 20, 50, 100, 500 };
 
 	string pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
 
@@ -109,27 +111,13 @@ else
 	string redBadgeStyle = "background-color:#FAE5E5;color:#DC5151;";
 	string grayBadgeStyle = "background-color:#DAD9D9;color:#636262;";
 
-	// private IJSObjectReference? jsModule;
+	private bool isLoading = false;
 
-	// protected override async Task OnAfterRenderAsync(bool firstRender)
-	// {
-	// 	jsModule = await JS.InvokeAsync<IJSObjectReference>("import", "./scripts/radzendatagridscript.js");
-
-	// 	if(firstRender)
-	// 	{
-	// 		// By default, RadzenDataGrid will initially display '10' for the page size dropdown label on page load.
-	// 		// This Javascript call sets the label to the correct minimum page size number.
-	// 		int minPageSizeOption = PageSizeOptions.FirstOrDefault();
-	// 		Console.WriteLine("FIRST RENDER : ONAFTERRENDER");
-	// 		await jsModule.InvokeVoidAsync("changeDropdownLabelText", $"{minPageSizeOption}");			
-	// 	}
-	// }
-
-	// async ValueTask IAsyncDisposable.DisposeAsync()
-	// {
-	// 	if (jsModule is not null)
-	// 	{
-	// 		await jsModule.DisposeAsync();
-	// 	}
-	// }
+	protected override async Task OnInitializedAsync()
+	{
+		isLoading = true;
+		await Task.Delay(3000);
+		base.OnInitialized();
+		isLoading = false;
+	}
 }

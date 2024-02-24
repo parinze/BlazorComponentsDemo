@@ -1,8 +1,6 @@
-﻿@page "/radzendatagridtest"
+﻿@page "/radzendatagridload"
 @using BlazorComponentsDemo.ComponentsLibrary.Models
 @inject HttpClient Http
-@* @inject IJSRuntime JS *@
-@* @implements IAsyncDisposable *@
 
 <style>
     tr.rz-data-row:hover {
@@ -17,16 +15,12 @@
 
 <h3>Radzen DataGrid Demo</h3>
 
-@* @if (testData == null) *@
-@if (isLoading == true)
+@* @if (testData == null)
 {
-    <div class="datagridspinnercontainer">
-        <img src="assets/images/datagridspinner.svg" class="datagridspinner">
-        <div class="datagridloading">Loading</div>
-    </div>
+    <p><em>Loading...</em></p>
 }
 else
-{
+{ *@
     <RadzenDataGrid 
         AllowPaging="true" 
         PageSize="3" 
@@ -42,7 +36,10 @@ else
         Data="@testData" 
         TItem="TestData" 
         ColumnWidth="200px"
-        AllowColumnResize="true">
+        AllowColumnResize="true"
+        IsLoading=@isLoading
+        LoadData=@LoadData
+        Count="@count">
     <Columns>
             <RadzenDataGridColumn TItem="TestData" Property="Date" Title="Date" />
             <RadzenDataGridColumn TItem="TestData" Property="Type" Title="Type" />
@@ -58,12 +55,14 @@ else
             <RadzenDataGridColumn TItem="TestData" Property="Expiration" Title="Expiration" />
     </Columns>
 </RadzenDataGrid>
-}
+@* } *@
 
 @code {
     private List<TestData>? testData;
+    private List<TestData>? testData2;
     private string BadgeColumnName = "Status";
-    private bool isLoading = false;
+    bool isLoading = false;
+    int count;
 
     IList<TestData> selectedTestDataItems;
 
@@ -105,36 +104,41 @@ else
     //     { "TemperatureF", "Temp (F)" }
     // };
 
-    protected override async Task OnInitializedAsync()
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     testData = await Http.GetFromJsonAsync<List<TestData>>("sample-data/testsampledata.json");
+    //     // forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+    // }
+
+
+    async Task LoadData(LoadDataArgs args)
     {
+        Console.WriteLine("LoadData");
+        Console.WriteLine($"Skip: {args.Skip}, Top: {args.Top}");
         isLoading = true;
+
+        await Task.Yield();
+
         testData = await Http.GetFromJsonAsync<List<TestData>>("sample-data/testsampledata.json");
-        await Task.Delay(10000);
+        var query = testData.AsQueryable();
+
+        // if (!string.IsNullOrEmpty(args.Filter))
+        // {
+        //     query = query.Where(args.Filter);
+        // }
+
+        // if (!string.IsNullOrEmpty(args.OrderBy))
+        // {
+        //     query = query.OrderBy(args.OrderBy);
+        // }
+
+        count = query.Count();
+
+        // Simulate async data loading
+        await Task.Delay(2000);
+
+        testData = await Task.FromResult(query.Skip(args.Skip.Value).Take(args.Top.Value).ToList());
+
         isLoading = false;
-        // forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
     }
-
-    // private IJSObjectReference? jsModule;
-
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    // 	jsModule = await JS.InvokeAsync<IJSObjectReference>("import", "./scripts/radzendatagridscript.js");
-
-    // 	if(firstRender)
-    // 	{
-    // 		// By default, RadzenDataGrid will initially display '10' for the page size dropdown label on page load.
-    // 		// This Javascript call sets the label to the correct minimum page size number.
-    // 		int minPageSizeOption = PageSizeOptions.FirstOrDefault();
-    // 		Console.WriteLine("FIRST RENDER : ONAFTERRENDER");
-    // 		await jsModule.InvokeVoidAsync("changeDropdownLabelText", $"{minPageSizeOption}");
-    // 	}
-    // }
-
-    // async ValueTask IAsyncDisposable.DisposeAsync()
-    // {
-    // 	if (jsModule is not null)
-    // 	{
-    // 		await jsModule.DisposeAsync();
-    // 	}
-    // }
 }

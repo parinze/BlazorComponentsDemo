@@ -1,7 +1,49 @@
-﻿.rz-datatable-thead th .rz-column-title, .rz-grid-table thead th .rz-column-title {
+﻿th.rz-unselectable-text.rz-sortable-column.rz-text-align-left {
+    background-color: white !important;
+}
+
+.rz-datatable-thead th .rz-column-title, .rz-grid-table thead th .rz-column-title {
+    color: #007ac3 !important;
+}
+
+.rz-sortable-column .rzi-sort {
     color: #007ac3 !important;
 }
 
 a.rz-paginator-page.rz-paginator-element.rz-state-active {
     color: #007ac3 !important;
+}
+
+.rz-paginator-icon {
+    color: #007ac3 !important;
+}
+
+.datagridspinnercontainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 50vh;
+}
+
+.datagridspinner {
+    width: 20px;
+    height: 20px;
+    animation: spin 1000ms linear infinite;
+}
+
+.datagridloading {
+    font-family: sans-serif;
+    text-align: center;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
 }

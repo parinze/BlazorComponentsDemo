@@ -16,14 +16,12 @@ else
     PropertyToHeaderName="@propertyToHeaderNames"
     BadgeColumnName="@BadgeColumnName" 
     GreenBadgeWords="@GreenBadgeWords"
-    RedBadgeWords="@RedBadgeWords"
-    PageSizeOptions="@PageSizeOptions"/>
+    RedBadgeWords="@RedBadgeWords"/>
 @* } *@
 
 @code {
     private List<TestDataLarge>? testData;
     private string BadgeColumnName = "Status";
-    private int[] PageSizeOptions = new int[] { 10, 20, 50, 100, 500, 1000 };
 
     Dictionary<string, string> propertyToHeaderNames = new()
     {
@@ -41,7 +39,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        Thread.Sleep(3000);
         testData = await Http.GetFromJsonAsync<List<TestDataLarge>>("sample-data/testsampledatalarge.json");
     }
 }
