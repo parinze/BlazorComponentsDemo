@@ -1,4 +1,4 @@
-﻿@page "/radzendatagridtest"
+﻿@page "/radzendatagridedit"
 @inject HttpClient Http
 @* @inject IJSRuntime JS *@
 @* @implements IAsyncDisposable *@
@@ -15,23 +15,6 @@
 </style>
 
 <h3>Radzen DataGrid Demo</h3>
-
-<div class="col-3">
-    <div class="form-group">
-        <label for="patientInput">Filter By Patient:</label>
-        <input type="text" class="form-control" id="patientInput" placeholder="Find Patient" @bind="selectedPatient" />
-    
-        <label for="statusDropdown">Filter By Status:</label>
-        <select class="form-control" id="statusDropdown" @bind="selectedStatus">
-            <option value="Active">Active</option>
-            <option value="Expired">Expired</option>
-            <option value="New">New</option>
-        </select>
-    </div>
-</div>
-
-
-<button type="button" class="btn btn-primary" @onclick="ApplyFilter">Apply</button>
 
 @* @if (testData == null) *@
 @if (isLoading == true)
@@ -52,12 +35,9 @@ else
         LogicalFilterOperator="LogicalFilterOperator.Or"
         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
         AllowAlternatingRows="true"
-		AllowRowSelectOnRowClick="true"
-        SelectionMode="DataGridSelectionMode.Single"
-        @bind-Value=@selectedTestDataItems
-        Data="@filteredTestData" 
+        Data="@testData" 
         TItem="TestData" 
-        ColumnWidth="200px"
+        ColumnWidth="100px"
         AllowColumnResize="true">
     <Columns>
             <RadzenDataGridColumn TItem="TestData" Property="Date" Title="Date" />
@@ -72,30 +52,14 @@ else
             <RadzenDataGridColumn TItem="TestData" Property="OutcomeDate" Title="OutcomeDate" />
             <RadzenDataGridColumn TItem="TestData" Property="SentBy" Title="SentBy" />
             <RadzenDataGridColumn TItem="TestData" Property="Expiration" Title="Expiration" />
-
-            @* WEATHER
-            <RadzenGridColumn TItem="@TType" Property="Date" Title="Date"></RadzenGridColumn>
-            <RadzenGridColumn TItem="@TType" Property="TemperatureC" Title="Temp (C)"></RadzenGridColumn>
-            <RadzenGridColumn TItem="@TType" Property="Summary" Title="Summary"></RadzenGridColumn>
-            <RadzenGridColumn TItem="@TType" Property="TemperatureF" Title="Temp (F)"></RadzenGridColumn> *@
     </Columns>
 </RadzenDataGrid>
 }
 
 @code {
     private IEnumerable<TestData>? testData;
-    private IEnumerable<TestData>? filteredTestData;
     private string BadgeColumnName = "Status";
     private bool isLoading = false;
-
-    private IList<TestData> selectedTestDataItems;
-    private string selectedStatus = "";
-    private string selectedPatient = "";
-
-    void ClearSelection()
-    {
-        selectedTestDataItems = null;
-    }
 
     Dictionary<string, string> propertyToHeaderNames = new()
     {
@@ -134,43 +98,9 @@ else
     {
         isLoading = true;
         testData = await Http.GetFromJsonAsync<List<TestData>>("sample-data/testsampledata.json");
-        filteredTestData = testData;
         await Task.Delay(5000);
         isLoading = false;
         // forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-    }
-
-    private async Task ApplyFilter()
-    {
-        isLoading = true;
-
-        var lowerCaseSelectedPatient = selectedPatient?.ToLower();
-
-        if (testData == null)
-        {
-            filteredTestData = null;
-        }
-        else if (!string.IsNullOrEmpty(selectedStatus) && !string.IsNullOrEmpty(lowerCaseSelectedPatient))
-        {
-            filteredTestData = testData.Where(t => t.Patient.ToLower().Contains(lowerCaseSelectedPatient)
-                                                && t.Status == selectedStatus).ToList();
-        }
-        else if (!string.IsNullOrEmpty(lowerCaseSelectedPatient))
-        {
-            filteredTestData = testData.Where(t => t.Patient.ToLower().Contains(lowerCaseSelectedPatient)).ToList();
-        }
-        else if (!string.IsNullOrEmpty(selectedStatus))
-        {
-            filteredTestData = testData.Where(t => t.Status == selectedStatus).ToList();
-        }
-        else
-        {
-            filteredTestData = testData;
-        }
-
-        await Task.Delay(3000);
-
-        isLoading = false;
     }
 
     // private IJSObjectReference? jsModule;

@@ -17,4 +17,8 @@
     <PackageReference Include="Radzen.Blazor" Version="4.16.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorComponentsDemo.DataModels\BlazorComponentsDemo.DataModels.csproj" />
+  </ItemGroup>
+
 </Project>

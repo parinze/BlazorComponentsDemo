@@ -72,12 +72,6 @@ else
 					<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" />
 				}
 			}
-			
-			@* WEATHER *@
-			@* <RadzenGridColumn TItem="@TType" Property="Date" Title="Date"></RadzenGridColumn>
-			<RadzenGridColumn TItem="@TType" Property="TemperatureC" Title="Temp (C)"></RadzenGridColumn>
-			<RadzenGridColumn TItem="@TType" Property="Summary" Title="Summary"></RadzenGridColumn>
-			<RadzenGridColumn TItem="@TType" Property="TemperatureF" Title="Temp (F)"></RadzenGridColumn> *@
 		</Columns>
 	</RadzenDataGrid>
 }
@@ -99,19 +93,16 @@ else
 	[Parameter] public string[]? RedBadgeWords { get; set; }
 
 
+	private bool isLoading = false;
 	private IEnumerable<int> PageSizeOptions { get; set; } = new int[] { 10, 20, 50, 100, 500 };
-
-	string pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
-
-	IList<TType> selectedItems = new List<TType>();
+	private string pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
 
 	// Badge styles for Status column
-	string baseBadgeStyle = "border-radius:20px;text-align:center;";
-	string greenBadgeStyle = "background-color:#E5F2E8;color:#28A745;";
-	string redBadgeStyle = "background-color:#FAE5E5;color:#DC5151;";
-	string grayBadgeStyle = "background-color:#DAD9D9;color:#636262;";
+	private string baseBadgeStyle = "border-radius:20px;text-align:center;";
+	private string greenBadgeStyle = "background-color:#E5F2E8;color:#28A745;";
+	private string redBadgeStyle = "background-color:#FAE5E5;color:#DC5151;";
+	private string grayBadgeStyle = "background-color:#DAD9D9;color:#636262;";
 
-	private bool isLoading = false;
 
 	protected override async Task OnInitializedAsync()
 	{

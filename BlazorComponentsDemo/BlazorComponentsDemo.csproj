@@ -10,11 +10,23 @@
     <PackageReference Include="BlazorDateRangePicker" Version="5.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.15" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.15" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Radzen.Blazor" Version="4.16.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BlazorComponentsDemo.ComponentsLibrary\BlazorComponentsDemo.ComponentsLibrary.csproj" />
+    <ProjectReference Include="..\BlazorComponentsDemo.DataModels\BlazorComponentsDemo.DataModels.csproj" />
   </ItemGroup>
 
 </Project>

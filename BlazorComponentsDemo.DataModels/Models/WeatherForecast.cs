@@ -1,4 +1,4 @@
-﻿namespace BlazorComponentsDemo.ComponentsLibrary.Models
+﻿namespace BlazorComponentsDemo.DataModels.Models
 {
     public class WeatherForecast
     {
