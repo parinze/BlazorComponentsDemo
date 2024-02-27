@@ -27,6 +27,7 @@
 else
 {
     <RadzenDataGrid 
+        @ref="dataGrid"
         AllowPaging="true" 
         PageSize="3" 
         AllowSorting="true"
@@ -47,7 +48,17 @@ else
             <RadzenDataGridColumn TItem="TestData" Property="SMS" Title="SMS" />
             <RadzenDataGridColumn TItem="TestData" Property="View" Title="View" />
             <RadzenDataGridColumn TItem="TestData" Property="LastView" Title="LastView" />
-            <RadzenDataGridColumn TItem="TestData" Property="Status" Title="Status" />
+            <RadzenDataGridColumn TItem="TestData" Property="Status" Title="Status">
+                <Template>
+                    @context.Status
+                    <RadzenButton Icon="edit" Style="float:right" Size="ButtonSize.Small" Click="@(args => EditRow(@context))" />
+                </Template>
+                <EditTemplate>
+                    <RadzenTextBox @bind-Value="@context.Status" Style="width:100px; display:block" Name="Status" />
+                    <RadzenButton Icon="save" Size="ButtonSize.Small" Click="@((args) => UpdateRow(@context))" />
+                    <RadzenButton Icon="cancel" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Click="@((args) => CancelEdit(@context))" />
+                </EditTemplate>
+            </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="TestData" Property="Outcome" Title="Outcome" />
             <RadzenDataGridColumn TItem="TestData" Property="OutcomeDate" Title="OutcomeDate" />
             <RadzenDataGridColumn TItem="TestData" Property="SentBy" Title="SentBy" />
@@ -57,6 +68,7 @@ else
 }
 
 @code {
+    RadzenDataGrid<TestData> dataGrid;
     private IEnumerable<TestData>? testData;
     private string BadgeColumnName = "Status";
     private bool isLoading = false;
@@ -83,47 +95,39 @@ else
     private string[] RedBadgeWords = new string[] { "Expired" };
 
 
-    // private WeatherForecast[]? forecasts;
-
-    // Property, Human-readable header
-    // Dictionary<string, string> dictionary = new()
-    // {
-    //     { "Date", "Date" },
-    //     { "TemperatureC", "Temp (C)" },
-    //     { "Summary", "Summary" },
-    //     { "TemperatureF", "Temp (F)" }
-    // };
-
     protected override async Task OnInitializedAsync()
     {
         isLoading = true;
         testData = await Http.GetFromJsonAsync<List<TestData>>("sample-data/testsampledata.json");
-        await Task.Delay(5000);
+        // await Task.Delay(5000);
         isLoading = false;
         // forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
     }
 
-    // private IJSObjectReference? jsModule;
+    private async Task EditRow(TestData testdata)
+    {
+        // Set the grid row in edit mode.
+        await dataGrid.EditRow(testdata);
+    }
 
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    // 	jsModule = await JS.InvokeAsync<IJSObjectReference>("import", "./scripts/radzendatagridscript.js");
+    private async Task UpdateRow(TestData testdata)
+    {
+        // Set the grid row in read-only mode.
+        await dataGrid.UpdateRow(testdata);
 
-    // 	if(firstRender)
-    // 	{
-    // 		// By default, RadzenDataGrid will initially display '10' for the page size dropdown label on page load.
-    // 		// This Javascript call sets the label to the correct minimum page size number.
-    // 		int minPageSizeOption = PageSizeOptions.FirstOrDefault();
-    // 		Console.WriteLine("FIRST RENDER : ONAFTERRENDER");
-    // 		await jsModule.InvokeVoidAsync("changeDropdownLabelText", $"{minPageSizeOption}");
-    // 	}
-    // }
+        // Update your data with provided values.
+        // dbContext.Update<Order>(order);
+        // dbContext.SaveChanges();
+    }
 
-    // async ValueTask IAsyncDisposable.DisposeAsync()
-    // {
-    // 	if (jsModule is not null)
-    // 	{
-    // 		await jsModule.DisposeAsync();
-    // 	}
-    // }
+    private void CancelEdit(TestData testdata)
+    {
+        // Set the grid row in read-only mode.
+        dataGrid.CancelEditRow(testdata);
+
+        // Revert all changes.
+        // var orderEntry = dbContext.Entry(order);
+        // orderEntry.CurrentValues.SetValues(orderEntry.OriginalValues);
+        // orderEntry.State = EntityState.Unchanged;
+    }
 }

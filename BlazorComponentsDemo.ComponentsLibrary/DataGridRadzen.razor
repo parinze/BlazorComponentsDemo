@@ -1,6 +1,6 @@
 ﻿@typeparam TType
 
-@if (isLoading == true)
+@* @if (isLoading == true)
 {
 	<div class="datagridspinnercontainer">
 		<img src="assets/images/datagridspinner.svg" class="datagridspinner">
@@ -8,62 +8,71 @@
 	</div>
 }
 else
-{
-	<RadzenDataGrid
-		AllowColumnResize="true"
-		AllowSorting="true"
-		AllowPaging="true"
-		PageSizeOptions="@PageSizeOptions"
-		ShowPagingSummary="true"
-		PagingSummaryFormat="@pagingSummaryFormat"
-		AllowAlternatingRows="true"
-		Data="@Data"
-		TItem="@TType"
-		ColumnWidth="100px"
-		GridLines="Radzen.DataGridGridLines.Both">
-		<Columns>
-			@foreach (var property in typeof(TType).GetProperties())
+{ *@
+<RadzenDataGrid 
+	AllowColumnResize="true"
+	AllowSorting="true"
+	AllowPaging="true"
+	PageSizeOptions="@PageSizeOptions"
+	ShowPagingSummary="true"
+	PagingSummaryFormat="@pagingSummaryFormat"
+	AllowAlternatingRows="true"
+	PageSizeChanged="@(args => pageSize = args)"
+	Data="@Data"
+	TItem="@TType"
+	ColumnWidth="100px"
+	GridLines="Radzen.DataGridGridLines.Both"
+	IsLoading="@IsLoading" 
+	LoadData="@LoadData"
+	Count="@QueryCount">
+	<Columns>
+		@foreach (var property in typeof(TType).GetProperties())
+		{
+			@if (property.PropertyType.FullName == typeof(DateTime).FullName
+					|| property.PropertyType.FullName == typeof(DateTime?).FullName
+					|| property.PropertyType.FullName == typeof(DateTimeOffset).FullName
+					|| property.PropertyType.FullName == typeof(DateTimeOffset?).FullName)
 			{
-				@if (property.PropertyType.FullName == typeof(DateTime).FullName
-						|| property.PropertyType.FullName == typeof(DateTime?).FullName
-						|| property.PropertyType.FullName == typeof(DateTimeOffset).FullName
-						|| property.PropertyType.FullName == typeof(DateTimeOffset?).FullName)
-				{
-					<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" FormatString="{0:MM/dd/yyyy HH:mm}" />
-				}
-				else if (property.Name == "Status")
-				{
-					<RadzenDataGridColumn TItem="TType" Property="Status" Title="Status">
-						<Template>
-							@{
-								var properties = context.GetType().GetProperties();
-								var statusColumnProperty = properties.Single(p => p.Name == "Status");
-								var propertyValue = statusColumnProperty.GetValue(context);
-
-								var status = Statuses.FirstOrDefault(s => s.Label == propertyValue!.ToString());
-
-								if(status != null)
-								{
-									<div class="badge badge-pill" style="@status.Style">@status.Label</div>
-								}
-								else
-								{
-									<div class="badge badge-pill" style="background-color:#DAD9D9;color:#636262;">@propertyValue</div>
-								}
-							}
-						</Template>
-					</RadzenDataGridColumn>
-
-				}
-				else
-				{
-					<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" />
-				}
+				<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" FormatString="{0:MM/dd/yyyy HH:mm}" />
 			}
-		</Columns>
-	</RadzenDataGrid>
-}
+			else if (property.Name == "Status")
+			{
+				<RadzenDataGridColumn TItem="TType" Property="Status" Title="Status">
+					<Template>
+						@{
+							var properties = context.GetType().GetProperties();
+							var statusColumnProperty = properties.Single(p => p.Name == "Status");
+							var propertyValue = statusColumnProperty.GetValue(context);
+
+							var status = Statuses.FirstOrDefault(s => s.Label == propertyValue!.ToString());
+
+							if(status != null)
+							{
+								<div class="badge badge-pill" style="@status.Style">@status.Label</div>
+							}
+							else
+							{
+								<div class="badge badge-pill" style="background-color:#DAD9D9;color:#636262;">@propertyValue</div>
+							}
+						}
+					</Template>
+				</RadzenDataGridColumn>
+
+			}
+			else
+			{
+				<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" />
+			}
+		}
+	</Columns>
+</RadzenDataGrid>
+@* } *@
 @code {
+	// private bool isLoading = false;
+	private IEnumerable<int> PageSizeOptions { get; set; } = new int[] { 10, 20, 50, 100, 500 };
+	private int pageSize = 10;
+	private string pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
+
 	/// <summary>
 	/// An array of <typeparamref name="TType"/> objects.
 	/// </summary>
@@ -81,17 +90,16 @@ else
 		new Status() { Label = "Deleted", Style = "background-color:#FAE5E5;color:#DC5151;", Code = 0 }
 	};
 
+	[Parameter] public bool IsLoading { get; set; }
+	[Parameter] public Func<LoadDataArgs, Task> LoadData { get; set; }
+	[Parameter] public int QueryCount { get; set; }
 
-	private bool isLoading = false;
-	private IEnumerable<int> PageSizeOptions { get; set; } = new int[] { 10, 20, 50, 100, 500 };
-	private string pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
 
-
-	protected override async Task OnInitializedAsync()
-	{
-		isLoading = true;
-		await Task.Delay(3000);
-		base.OnInitialized();
-		isLoading = false;
-	}
+	// protected override async Task OnInitializedAsync()
+	// {
+	// 	isLoading = true;
+	// 	await Task.Delay(3000);
+	// 	base.OnInitialized();
+	// 	isLoading = false;
+	// }
 }

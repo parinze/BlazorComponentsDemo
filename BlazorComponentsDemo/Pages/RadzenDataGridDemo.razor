@@ -7,10 +7,15 @@
     Data=@testData
     TType="TestDataLarge"
     PropertyToHeaderName="@propertyToHeaderNames"
-    Statuses="@Statuses"/>
+    Statuses="@statuses"
+    IsLoading="@loadingTestData" 
+    LoadData="@LoadTestData" 
+    QueryCount="@count"/>
 
 @code {
     private List<TestDataLarge>? testData;
+    private bool loadingTestData { get; set; }
+    private int count;
 
     Dictionary<string, string> propertyToHeaderNames = new()
     {
@@ -22,14 +27,32 @@
         {"Status", "Status"}
     };
 
-    private List<Status> Statuses { get; set; } = new List<Status>() {
+    private List<Status> statuses { get; set; } = new List<Status>() {
         new Status() { Label = "True", Style = "background-color:#E5F2E8;color:#28A745;", Code = 1 },
         new Status() { Label = "False", Style = "background-color:#FAE5E5;color:#DC5151;", Code = 0 }
     };
 
 
-    protected override async Task OnInitializedAsync()
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     testData = await Http.GetFromJsonAsync<List<TestDataLarge>>("sample-data/testsampledatalarge.json");
+    // }
+
+    private async Task LoadTestData(LoadDataArgs args)
     {
+        loadingTestData = true;
+
+        // await DataService.Get<Patient>(someEndpoint, someId);
         testData = await Http.GetFromJsonAsync<List<TestDataLarge>>("sample-data/testsampledatalarge.json");
+        
+        var query = testData.AsQueryable();
+        
+        count = query?.Count() ?? 0;
+        
+        await Task.Delay(2000);
+        
+        testData = await Task.FromResult(query.Skip(args.Skip.Value).Take(args.Top.Value).ToList());
+        
+        loadingTestData = false;
     }
 }

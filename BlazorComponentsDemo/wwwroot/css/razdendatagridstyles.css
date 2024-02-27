@@ -14,10 +14,13 @@ a.rz-paginator-page.rz-paginator-element.rz-state-active {
     color: #007ac3 !important;
 }
 
-.rz-paginator-icon {
+i.rzi-circle-o-notch {
     color: #007ac3 !important;
 }
 
+.rz-paginator-icon {
+    color: #007ac3 !important;
+}
 .datagridspinnercontainer {
     display: flex;
     align-items: center;
