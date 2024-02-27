@@ -31,37 +31,25 @@ else
 				{
 					<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" FormatString="{0:MM/dd/yyyy HH:mm}" />
 				}
-				else if (property.Name == BadgeColumnName)
+				else if (property.Name == "Status")
 				{
-					<RadzenDataGridColumn TItem="TType" Property="@BadgeColumnName" Title="@PropertyToHeaderName[BadgeColumnName]">
+					<RadzenDataGridColumn TItem="TType" Property="Status" Title="Status">
 						<Template>
 							@{
 								var properties = context.GetType().GetProperties();
-								var badgeColumnProperty = properties.Single(p => p.Name == BadgeColumnName);
-								var propertyName = badgeColumnProperty.Name;
-								var propertyValue = badgeColumnProperty.GetValue(context);
+								var statusColumnProperty = properties.Single(p => p.Name == "Status");
+								var propertyValue = statusColumnProperty.GetValue(context);
 
-								if (propertyName == BadgeColumnName)
+								var status = Statuses.FirstOrDefault(s => s.Label == propertyValue!.ToString());
+
+								if(status != null)
 								{
-									string chosenColorBadgeStyle = "";
-									if (GreenBadgeWords.Contains(propertyValue.ToString()))
-									{
-										chosenColorBadgeStyle = greenBadgeStyle;
-									}
-									else if (RedBadgeWords.Contains(propertyValue.ToString()))
-									{
-										chosenColorBadgeStyle = redBadgeStyle;
-									}
-									else
-									{
-										chosenColorBadgeStyle = grayBadgeStyle;
-									}
-
-									<div style="@baseBadgeStyle @chosenColorBadgeStyle">
-										@propertyValue
-									</div>
+									<div class="badge badge-pill" style="@status.Style">@status.Label</div>
 								}
-								
+								else
+								{
+									<div class="badge badge-pill" style="background-color:#DAD9D9;color:#636262;">@propertyValue</div>
+								}
 							}
 						</Template>
 					</RadzenDataGridColumn>
@@ -87,21 +75,16 @@ else
 	/// </summary>
 	[Parameter][EditorRequired] public Dictionary<string, string> PropertyToHeaderName { get; set; } = new();
 
-
-	[Parameter] public string? BadgeColumnName { get; set; }
-	[Parameter] public string[]? GreenBadgeWords { get; set; }
-	[Parameter] public string[]? RedBadgeWords { get; set; }
+	[Parameter] public List<Status> Statuses { get; set; } = new List<Status>() {
+		new Status() { Label = "New", Style = "background-color:#DAD9D9;color:#636262;", Code = null },
+		new Status() { Label = "Active", Style = "background-color:#E5F2E8;color:#28A745;", Code = 1 },
+		new Status() { Label = "Deleted", Style = "background-color:#FAE5E5;color:#DC5151;", Code = 0 }
+	};
 
 
 	private bool isLoading = false;
 	private IEnumerable<int> PageSizeOptions { get; set; } = new int[] { 10, 20, 50, 100, 500 };
 	private string pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
-
-	// Badge styles for Status column
-	private string baseBadgeStyle = "border-radius:20px;text-align:center;";
-	private string greenBadgeStyle = "background-color:#E5F2E8;color:#28A745;";
-	private string redBadgeStyle = "background-color:#FAE5E5;color:#DC5151;";
-	private string grayBadgeStyle = "background-color:#DAD9D9;color:#636262;";
 
 
 	protected override async Task OnInitializedAsync()

@@ -3,24 +3,14 @@
 
 <h3>Radzen DataGrid Demo</h3>
 
-@* @if (testData == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{ *@
 <DataGridRadzen 
     Data=@testData
     TType="TestDataLarge"
     PropertyToHeaderName="@propertyToHeaderNames"
-    BadgeColumnName="@BadgeColumnName" 
-    GreenBadgeWords="@GreenBadgeWords"
-    RedBadgeWords="@RedBadgeWords"/>
-@* } *@
+    Statuses="@Statuses"/>
 
 @code {
     private List<TestDataLarge>? testData;
-    private string BadgeColumnName = "Status";
 
     Dictionary<string, string> propertyToHeaderNames = new()
     {
@@ -32,8 +22,10 @@ else
         {"Status", "Status"}
     };
 
-    private string[] GreenBadgeWords = new string[] { "True" };
-    private string[] RedBadgeWords = new string[] { "False" };
+    private List<Status> Statuses { get; set; } = new List<Status>() {
+        new Status() { Label = "True", Style = "background-color:#E5F2E8;color:#28A745;", Code = 1 },
+        new Status() { Label = "False", Style = "background-color:#FAE5E5;color:#DC5151;", Code = 0 }
+    };
 
 
     protected override async Task OnInitializedAsync()
