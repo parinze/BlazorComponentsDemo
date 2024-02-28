@@ -1,8 +1,12 @@
 ﻿using Azure;
 using BlazorComponentsDemo.DataModels.Models;
 using BlazorComponentsDemo.Services.Contracts;
+using System;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Text.Json.Serialization;
 
 namespace BlazorComponentsDemo.Services.Implementations
 {
@@ -22,11 +26,11 @@ namespace BlazorComponentsDemo.Services.Implementations
 			string requestUrl = $"{baseUrl}/api/peopletestdata/GetTestData";
 			Uri requestUri = new Uri(requestUrl);
 
-			var result = await _httpClient.GetAsync(requestUri);
+			var testDataResult = await _httpClient.GetAsync(requestUri);
 
-			var resultJSON = await result.Content.ReadAsStringAsync();
+			var testDataResultJSON = await testDataResult.Content.ReadAsStringAsync();
 
-			var testData = JsonSerializer.Deserialize<List<PeopleTestData>>(resultJSON);
+			var testData = JsonSerializer.Deserialize<List<PeopleTestData>>(testDataResultJSON);
 
 			if (testData == null)
 			{
@@ -34,6 +38,20 @@ namespace BlazorComponentsDemo.Services.Implementations
 			}
 
 			return testData;
+		}
+
+		public async Task<bool> UpdatePeopleTestDataStatus(int id, PeopleTestData testDataRecord)
+		{
+			string requestUrl = $"{baseUrl}/api/peopletestdata/UpdateTestDataStatus?id={id}";
+			Uri requestUri = new Uri(requestUrl);
+
+			var testDataResultJSON = JsonSerializer.Serialize(testDataRecord);
+
+			var content = new StringContent(testDataResultJSON, Encoding.UTF8, "application/json");
+
+			var response = await _httpClient.PutAsync(requestUri, content);
+
+			return response.IsSuccessStatusCode ? true : false;
 		}
 	}
 }

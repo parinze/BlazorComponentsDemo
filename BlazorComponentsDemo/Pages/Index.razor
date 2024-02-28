@@ -3,7 +3,8 @@
 
 <PageTitle>Index</PageTitle>
 
-<button type="button" class="btn btn-primary" onclick="@FetchPeopleTestData">Get Data</button>
+<button type="button" class="btn btn-primary" onclick="@(() => FetchPeopleTestData())">Get Data</button>
+<button type="button" class="btn btn-primary" onclick="@(() => UpdateFirstTestDataRecord())">Update Status for First Record</button>
 
 @if (testData == null)
 {
@@ -11,18 +12,51 @@
 }
 else
 {
-	@foreach (var person in testData)
+	@* @foreach (var person in testData)
 	{
 		<h3>@person.FirstName @person.LastName | @person.Email</h3>
 		<p>Status: @person.Status</p>
-	}
+	} *@
+
+	<h3>@firstTestDataRecord?.FirstName @firstTestDataRecord?.LastName | @firstTestDataRecord?.Email</h3>
+	<p>Status: @firstTestDataRecord?.Status</p>
 }
 
 @code {
-	private List<PeopleTestData> testData;
+	private List<PeopleTestData>? testData;
+	private PeopleTestData? firstTestDataRecord;
 
-	async Task FetchPeopleTestData(MouseEventArgs args)
+	protected override async Task OnInitializedAsync()
+	{
+		await FetchPeopleTestData();
+	}
+
+	private async Task UpdateFirstTestDataRecord()
+	{
+		if (firstTestDataRecord != null)
+		{
+			string status = firstTestDataRecord.Status == "true" ? "false" : "true";
+
+			var updatedFirstRecord = new PeopleTestData
+			{
+				Id = firstTestDataRecord.Id,
+				FirstName = firstTestDataRecord.FirstName,
+				LastName = firstTestDataRecord.LastName,
+				BirthDate = firstTestDataRecord.BirthDate,
+				Email = firstTestDataRecord.Email,
+				Status = status
+			};
+
+			await _dataAccessService.UpdatePeopleTestDataStatus(updatedFirstRecord.Id, updatedFirstRecord);
+		}
+
+		await FetchPeopleTestData();
+	}
+
+	private async Task FetchPeopleTestData()
 	{
 		testData = await _dataAccessService.GetPeopleTestData();
+		firstTestDataRecord = testData.FirstOrDefault();
 	}
+
 }
