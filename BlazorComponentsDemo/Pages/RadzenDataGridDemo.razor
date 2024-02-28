@@ -1,11 +1,13 @@
 ﻿@page "/radzendatagrid"
-@inject HttpClient Http
+@inject IDataAccessService _dataAccessService
 
 <h3>Radzen DataGrid Demo</h3>
 
+@* <button type="button" class="btn btn-primary" onclick="@(() => UpdateFirstTestDataRecord())">Update Status for First Record</button> *@
+
 <DataGridRadzen 
     Data=@testData
-    TType="TestDataLarge"
+    TType="PeopleTestData"
     PropertyToHeaderName="@propertyToHeaderNames"
     Statuses="@statuses"
     IsLoading="@loadingTestData" 
@@ -13,12 +15,14 @@
     QueryCount="@count"/>
 
 @code {
-    private List<TestDataLarge>? testData;
+    private List<PeopleTestData>? testData;
+    private PeopleTestData? firstTestDataRecord;
     private bool loadingTestData { get; set; }
     private int count;
 
     Dictionary<string, string> propertyToHeaderNames = new()
     {
+        {"Id", "ID"},
         {"FirstName", "First Name"},
         {"LastName", "Last Name"},
         {"Email", "Email"},
@@ -28,16 +32,16 @@
     };
 
     private List<Status> statuses { get; set; } = new List<Status>() {
-        new Status() { Label = "True", Style = "background-color:#E5F2E8;color:#28A745;", Code = 1 },
-        new Status() { Label = "False", Style = "background-color:#FAE5E5;color:#DC5151;", Code = 0 }
+        new Status() { Label = "true", Style = "background-color:#E5F2E8;color:#28A745;", Code = 1 },
+        new Status() { Label = "false", Style = "background-color:#FAE5E5;color:#DC5151;", Code = 0 }
     };
 
     private async Task LoadTestData(LoadDataArgs args)
     {
         loadingTestData = true;
 
-        // await DataService.Get<Patient>(someEndpoint, someId);
-        testData = await Http.GetFromJsonAsync<List<TestDataLarge>>("sample-data/testsampledatalarge.json");
+        testData = await _dataAccessService.GetPeopleTestData();
+        firstTestDataRecord = testData.FirstOrDefault();
         
         var query = testData.AsQueryable();
         
