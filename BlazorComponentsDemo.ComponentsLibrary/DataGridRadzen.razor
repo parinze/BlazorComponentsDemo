@@ -1,6 +1,7 @@
 ﻿@typeparam TType
 
 <RadzenDataGrid 
+	@ref="dataGrid"
 	AllowColumnResize="true"
 	AllowSorting="true"
 	AllowPaging="true"
@@ -25,6 +26,10 @@
 					|| property.PropertyType.FullName == typeof(DateTimeOffset?).FullName)
 			{
 				<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" FormatString="{0:MM/dd/yyyy HH:mm}" />
+			}
+			else if (ExcludedColumns.Contains(property.Name))
+			{
+				continue;
 			}
 			else if (property.Name == "Status")
 			{
@@ -59,7 +64,7 @@
 </RadzenDataGrid>
 
 @code {
-	// private bool isLoading = false;
+	private RadzenDataGrid<TType> dataGrid;
 	private IEnumerable<int> PageSizeOptions { get; set; } = new int[] { 10, 20, 50, 100, 500 };
 	private int pageSize = 10;
 	private string pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
@@ -78,7 +83,7 @@
 	/// <para>Filter: string (filter expression as a string)</para>
 	/// </summary>
 	[Parameter][EditorRequired] public Func<LoadDataArgs, Task> LoadData { get; set; }
-	
+
 	/// <summary>
 	/// A boolean value to indicate if the data grid is loading.
 	/// </summary>
@@ -104,4 +109,14 @@
 		new Status() { Label = "Deleted", Style = "background-color:#FAE5E5;color:#DC5151;", Code = 0 }
 	};
 
+	/// <summary>
+	/// A list of columns to exclude from datagrid.
+	/// </summary>
+	[Parameter] public List<string> ExcludedColumns { get; set; } = new();
+
+
+	protected override async Task OnParametersSetAsync()
+	{
+		await dataGrid.Reload();
+	}
 }
