@@ -1,9 +1,28 @@
 ﻿@page "/"
+@inject IDataAccessService _dataAccessService
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<button type="button" class="btn btn-primary" onclick="@FetchPeopleTestData">Get Data</button>
 
-Welcome to your new app.
+@if (testData == null)
+{
+	<p><em>Loading...</em></p>
+}
+else
+{
+	@foreach (var person in testData)
+	{
+		<h3>@person.FirstName @person.LastName | @person.Email</h3>
+		<p>Status: @person.Status</p>
+	}
+}
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+	private List<PeopleTestData> testData;
+
+	async Task FetchPeopleTestData(MouseEventArgs args)
+	{
+		testData = await _dataAccessService.GetPeopleTestData();
+	}
+}
