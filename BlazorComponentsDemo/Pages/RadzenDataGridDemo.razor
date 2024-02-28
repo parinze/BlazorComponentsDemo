@@ -32,12 +32,6 @@
         new Status() { Label = "False", Style = "background-color:#FAE5E5;color:#DC5151;", Code = 0 }
     };
 
-
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     testData = await Http.GetFromJsonAsync<List<TestDataLarge>>("sample-data/testsampledatalarge.json");
-    // }
-
     private async Task LoadTestData(LoadDataArgs args)
     {
         loadingTestData = true;
