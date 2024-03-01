@@ -7,10 +7,16 @@
     Data=@testData
     TType="TestData"
     PropertyToHeaderName="@propertyToHeaderNames"
-    Statuses="@Statuses"/>
+    Statuses="@Statuses"
+    IsLoading="@loadingTestData"
+    LoadData="@LoadTestData"
+    QueryCount="@count" />
 
 @code {
     private List<TestData>? testData;
+    private PeopleTestData? firstTestDataRecord;
+    private bool loadingTestData { get; set; }
+    private int count;
 
     Dictionary<string, string> propertyToHeaderNames = new()
     {
@@ -36,9 +42,20 @@
         new Status() { Label = "Expired", Style = "background-color:#FAE5E5;color:#DC5151;", Code = 0 }
     };
 
-
-    protected override async Task OnInitializedAsync()
+    private async Task LoadTestData(LoadDataArgs args)
     {
+        loadingTestData = true;
+
         testData = await Http.GetFromJsonAsync<List<TestData>>("sample-data/testsampledata.json");
+
+        var query = testData.AsQueryable();
+
+        count = query?.Count() ?? 0;
+
+        await Task.Delay(2000);
+
+        testData = await Task.FromResult(query.Skip(args.Skip.Value).Take(args.Top.Value).ToList());
+
+        loadingTestData = false;
     }
 }

@@ -6,7 +6,6 @@
 <button class="btn btn-primary" onclick="@(() => UpdateFirstTestDataRecord())">Update Status for First Record</button>
 
 <DataGridRadzen 
-    @ref="dataGridChild"
     Data=@testData
     TType="PeopleTestData"
     PropertyToHeaderName="@propertyToHeaderNames"
@@ -14,14 +13,15 @@
     IsLoading="@loadingTestData" 
     LoadData="@LoadTestData" 
     QueryCount="@count"
-    ExcludedColumns="@excludedColumns"/>
+    ExcludedColumns="@excludedColumns"
+    Updated=@updated/>
 
 @code {
-    private DataGridRadzen<PeopleTestData> dataGridChild;
     private List<PeopleTestData>? testData;
     private PeopleTestData? firstTestDataRecord;
     private bool loadingTestData { get; set; }
     private int count;
+    private bool updated;
 
     Dictionary<string, string> propertyToHeaderNames = new()
     {
@@ -76,7 +76,7 @@
                 };
 
             await _dataAccessService.UpdatePeopleTestDataStatus(updatedFirstRecord.Id, updatedFirstRecord);
-            await dataGridChild.ReloadDataGrid();
+            updated = true;
         }
     }
 }

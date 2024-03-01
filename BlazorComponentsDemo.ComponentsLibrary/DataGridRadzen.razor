@@ -68,6 +68,7 @@
 	private IEnumerable<int> PageSizeOptions { get; set; } = new int[] { 10, 20, 50, 100, 500 };
 	private int pageSize = 10;
 	private string pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
+	private bool isReloading = false;
 
 	/// <summary>
 	/// An array of <typeparamref name="TType"/> objects.
@@ -77,8 +78,8 @@
 	/// <summary>
 	/// A function to load data (as a queryable collection) into the data grid.
 	/// <para>LoadDataArgs includes the following properties:</para>
-	/// <para>Top: int (current page size)</para>
-	/// <para>Skip: int (# of records to skip on current page)</para>
+	/// <para>Top: int (current page size), default = 10</para>
+	/// <para>Skip: int (# of records to skip on each page), default = 0</para>
 	/// <para>OrderBy: string (sort expression as a string)</para>
 	/// <para>Filter: string (filter expression as a string)</para>
 	/// </summary>
@@ -114,9 +115,21 @@
 	/// </summary>
 	[Parameter] public List<string> ExcludedColumns { get; set; } = new();
 
+	/// <summary>
+	/// A boolean value to indicate if the data grid needs to be updated. Usually used after handling an event.
+	/// </summary>
+	[Parameter] public bool Updated { get; set; } = false;
 
-	public async Task ReloadDataGrid()
+
+	protected override async Task OnParametersSetAsync()
 	{
-		await dataGrid.Reload();
+		if (Updated && !isReloading)
+		{
+			isReloading = true;
+			await dataGrid.Reload();
+			isReloading = false;
+			Updated = false;
+		}
+
 	}
 }
