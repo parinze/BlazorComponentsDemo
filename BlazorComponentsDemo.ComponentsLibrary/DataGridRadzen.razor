@@ -44,11 +44,11 @@
 
 							if(status != null)
 							{
-								<div class="badge badge-pill" style="@status.Style">@status.Label</div>
+								<div class="badge badge-pill" style="font-size:12px;@status.Style">@status.Label</div>
 							}
 							else
 							{
-								<div class="badge badge-pill" style="background-color:#DAD9D9;color:#636262;">@propertyValue</div>
+								<div class="badge badge-pill" style="font-size:12px;background-color:#DAD9D9;color:#636262;">@propertyValue</div>
 							}
 						}
 					</Template>
@@ -115,7 +115,7 @@
 	[Parameter] public List<string> ExcludedColumns { get; set; } = new();
 
 
-	protected override async Task OnParametersSetAsync()
+	public async Task ReloadDataGrid()
 	{
 		await dataGrid.Reload();
 	}
