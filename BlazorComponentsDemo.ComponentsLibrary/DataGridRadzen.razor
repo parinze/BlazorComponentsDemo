@@ -15,7 +15,6 @@
 	LoadData="@LoadData"
 	IsLoading="@IsLoading" 
 	TItem="@TType"
-	ColumnWidth="100px"
 	GridLines="Radzen.DataGridGridLines.Both"
 	Count="@QueryCount">
 	<Columns>
@@ -26,7 +25,7 @@
 					|| property.PropertyType.FullName == typeof(DateTimeOffset).FullName
 					|| property.PropertyType.FullName == typeof(DateTimeOffset?).FullName)
 			{
-				<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" FormatString="{0:MM/dd/yyyy HH:mm}" />
+				<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@GetPropertyHeaderName(property.Name)" FormatString="{0:MM/dd/yyyy HH:mm}" />
 			}
 			else if (ExcludedColumns.Contains(property.Name))
 			{
@@ -58,7 +57,7 @@
 			}
 			else
 			{
-				<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@PropertyToHeaderName[property.Name]" />
+				<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@GetPropertyHeaderName(property.Name)" />
 			}
 		}
 	</Columns>

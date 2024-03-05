@@ -39,10 +39,11 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 		[Parameter][EditorRequired] public int QueryCount { get; set; }
 
 		/// <summary>
-		/// Dictionary mapping of the property names of <typeparamref name="TType"/> class to desired header names.
+		/// Dictionary mapping of the property names of <typeparamref name="TType"/> class to desired column header names.
+		/// <para>Note: It is not required to include all of the property names in the dictionary.</para>
 		/// <para>E.g. Property: PurchaseDate > {"PurchaseDate", "Purchase Date"}</para>
 		/// </summary>
-		[Parameter][EditorRequired] public Dictionary<string, string> PropertyToHeaderName { get; set; } = new();
+		[Parameter] public Dictionary<string, string> PropertyToHeaderName { get; set; } = new();
 
 		/// <summary>
 		/// A list of <see cref="Status"/> objects to be used to specify styles based on the specified status label.
@@ -74,6 +75,18 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 				Updated = false;
 			}
 
+		}
+
+		protected string GetPropertyHeaderName(string propertyName)
+		{
+			if (PropertyToHeaderName.ContainsKey(propertyName))
+			{
+				return PropertyToHeaderName[propertyName];
+			}
+			else
+			{
+				return propertyName;
+			}
 		}
 	}
 }
