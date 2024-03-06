@@ -40,6 +40,12 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 		[Parameter][EditorRequired] public int QueryCount { get; set; }
 
 		/// <summary>
+		/// A string value to specify the date format to be used in the data grid.
+		/// <para>Default: "{0:MM/dd/yyyy HH:mm}"</para>
+		/// </summary>
+		[Parameter] public string DateFormat { get; set; } = "{0:MM/dd/yyyy HH:mm}";
+
+		/// <summary>
 		/// Dictionary mapping of the property names of <typeparamref name="TType"/> class to desired column header names.
 		/// <para>Note: It is not required to include all of the property names in the dictionary.</para>
 		/// <para>E.g. Property: PurchaseDate > {"PurchaseDate", "Purchase Date"}</para>
