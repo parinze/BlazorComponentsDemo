@@ -1,5 +1,6 @@
 ﻿@page "/radzendatagrid"
 @inject IDataAccessService _dataAccessService
+@inject HttpClient Http
 
 <h3>Radzen DataGrid Demo</h3>
 
@@ -31,8 +32,8 @@
     };
 
     private List<Status> statuses { get; set; } = new List<Status>() {
-        new Status() { Label = "true", Style = "background-color:#E5F2E8;color:#28A745;", Code = 1 },
-        new Status() { Label = "false", Style = "background-color:#FAE5E5;color:#DC5151;", Code = 0 }
+        new Status() { Label = "true", Style = "background-color:#E5F2E8;color:#28A745;"},
+        new Status() { Label = "false", Style = "background-color:#FAE5E5;color:#DC5151;"}
     };
 
     private List<string> excludedColumns = new List<string> { "Id" };

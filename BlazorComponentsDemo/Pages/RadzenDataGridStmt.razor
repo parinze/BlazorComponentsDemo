@@ -1,0 +1,89 @@
+﻿@page "/radzendatagridstmt"
+@inject IDataAccessService _dataAccessService
+@inject HttpClient Http
+
+<h3>Radzen DataGrid Demo</h3>
+
+<DataGridRadzen Data=@statements
+    TType="StatementsViewVm"
+    PropertyToHeaderName="@propertyToHeaderNames"
+    Statuses="@statuses"
+    IsLoading="@loadingStatementsData" 
+    LoadData="@LoadStatementsData" 
+    QueryCount="@count"
+    ExcludedColumns="@excludedColumns"
+    Updated=@updated/>
+
+@code {
+    private StatementQueryVm? ViewModel;
+
+    protected List<StatementQueryDto> statementsDto;
+    protected List<StatementsViewVm> statementsPlaceholder = new List<StatementsViewVm>();
+    protected List<StatementsViewVm> statements;
+
+    protected bool loadingStatementsData { get; set; }
+    private int count;
+    private bool updated;
+
+    protected Dictionary<string, string> propertyToHeaderNames = new()
+    {
+        {"DateEntered", "Date Entered"},
+        {"BillingParty", "Billing Party"},
+        {"CityState", "City, State"},
+        {"ShowBilledString", "Show Billed"},
+        {"AccountBalance", "Account Balance"},
+        {"TotalDue", "Total Due"},
+        {"Over30", "Over 30"},
+        {"Over60", "Over 60"},
+        {"Over90", "Over 90"},
+    };
+
+    protected List<Status> statuses { get; set; } = new List<Status>() {
+        new Status() { Label = "Emailed", Style = "background-color:#E5F2E8;color:#28A745;"},
+        new Status() { Label = "Printed", Style = "background-color:#E5F2E8;color:#28A745;"}
+    };
+
+    protected List<string> excludedColumns = new() { "ShowBilled" };
+
+    private async Task LoadStatementsData(LoadDataArgs args)
+    {
+        loadingStatementsData = true;
+
+        ViewModel = await _dataAccessService.GetStatements();
+        statementsDto = (List<StatementQueryDto>)ViewModel.Data;
+
+        foreach (var dto in statementsDto)
+        {
+            var viewVm = new StatementsViewVm
+            {
+                DateEntered = dto.Datetime,
+                BillingParty = dto.BillingPartyName,
+                Patients = dto.Patients,
+                CityState = dto.CityState,
+                Location = dto.LocationName,
+                Code = dto.Code,
+                Day = dto.Day,
+                Send = dto.Send,
+                Status = dto.StatusDescription,
+                ShowBilled = dto.ShowBilled,
+            };
+
+            statementsPlaceholder.Add(viewVm);
+        }
+
+        // LoadData event will not start loading process with the initialization of an empty list.
+        // Once the initialized list (statementsPlaceholder) is finished fully populating,
+        // the actual list that the DataGrid will use (statements) will be assigned to statementsPlaceholder.
+        statements = statementsPlaceholder;
+
+        var query = statements.AsQueryable();
+
+        count = query?.Count() ?? 0;
+
+        await Task.Delay(2000);
+
+        statements = await Task.FromResult(query.Skip(args.Skip.Value).Take(args.Top.Value).ToList());
+
+        loadingStatementsData = false;
+    }
+}

@@ -7,7 +7,8 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 {
 	public class DataGridRadzenModel<TType> : ComponentBase
 	{
-		protected RadzenDataGrid<TType> dataGrid;
+        #region Variable Declaration
+        protected RadzenDataGrid<TType> dataGrid;
 		protected IEnumerable<int> PageSizeOptions { get; set; } = new int[] { 10, 20, 50, 100, 500 };
 		protected int pageSize = 10;
 		protected string pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
@@ -49,9 +50,9 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 		/// A list of <see cref="Status"/> objects to be used to specify styles based on the specified status label.
 		/// </summary>
 		[Parameter] public List<Status> Statuses { get; set; } = new List<Status>() {
-			new Status() { Label = "New", Style = "background-color:#DAD9D9;color:#636262;", Code = null },
-			new Status() { Label = "Active", Style = "background-color:#E5F2E8;color:#28A745;", Code = 1 },
-			new Status() { Label = "Deleted", Style = "background-color:#FAE5E5;color:#DC5151;", Code = 0 }
+			new Status() { Label = "New", Style = "background-color:#DAD9D9;color:#636262;"},
+			new Status() { Label = "Active", Style = "background-color:#E5F2E8;color:#28A745;"},
+			new Status() { Label = "Deleted", Style = "background-color:#FAE5E5;color:#DC5151;"}
 		};
 
 		/// <summary>
@@ -63,9 +64,10 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 		/// A boolean value to indicate if the data grid needs to be updated. Usually used after handling an event.
 		/// </summary>
 		[Parameter] public bool Updated { get; set; } = false;
+        #endregion
 
-
-		protected override async Task OnParametersSetAsync()
+        #region Life-Cycle Methods
+        protected override async Task OnParametersSetAsync()
 		{
 			if (Updated && !isReloading)
 			{
@@ -76,8 +78,10 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 			}
 
 		}
+        #endregion
 
-		protected string GetPropertyHeaderName(string propertyName)
+        #region Other Methods
+        protected string GetPropertyHeaderName(string propertyName)
 		{
 			if (PropertyToHeaderName.ContainsKey(propertyName))
 			{
@@ -88,5 +92,6 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 				return propertyName;
 			}
 		}
-	}
+        #endregion
+    }
 }
