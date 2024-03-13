@@ -1,4 +1,5 @@
 ﻿@page "/radzendatagrid"
+@using System.Linq.Dynamic.Core
 @inject IDataAccessService _dataAccessService
 @inject HttpClient Http
 
@@ -18,7 +19,7 @@
     Updated=@updated/>
 
 @code {
-    private List<PeopleTestData>? testData;
+    private IEnumerable<PeopleTestData>? testData;
     private PeopleTestData? firstTestDataRecord;
     private bool loadingTestData { get; set; }
     private int count;
@@ -40,12 +41,20 @@
 
     private async Task LoadTestData(LoadDataArgs args)
     {
+
         loadingTestData = true;
 
         testData = await _dataAccessService.GetPeopleTestData();
         firstTestDataRecord = testData.FirstOrDefault();
 
         var query = testData.AsQueryable();
+
+        // Enable sorting with Dynamic LINQ (System.Linq.Dynamic.Core)
+        if (!string.IsNullOrEmpty(args.OrderBy))
+        {
+            // Sort via the OrderBy method
+            query = query.OrderBy(args.OrderBy);
+        }
 
         count = query?.Count() ?? 0;
 

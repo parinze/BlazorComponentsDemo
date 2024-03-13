@@ -50,3 +50,8 @@ i.rzi-circle-o-notch {
         transform: rotate(360deg)
     }
 }
+
+.rz-datatable-loading {
+    background-color: white;
+    opacity: 0.5;
+}

@@ -1,4 +1,4 @@
-﻿@page "/radzendatagridpbi"
+﻿@page "/radzendatagridpbiload"
 @using System.Linq.Dynamic.Core
 @inject HttpClient Http
 
@@ -11,7 +11,8 @@
     Statuses="@Statuses"
     IsLoading="@loadingTestData"
     LoadData="@LoadTestData"
-    QueryCount="@count" />
+    QueryCount="@count"/>
+
 
 @code {
     private List<TestData>? testData;
@@ -41,7 +42,7 @@
         new Status() { Label = "New", Style = "background-color:#DAD9D9;color:#636262;"},
         new Status() { Label = "Active", Style = "background-color:#E5F2E8;color:#28A745;"},
         new Status() { Label = "Expired", Style = "background-color:#FAE5E5;color:#DC5151;"}
-    };
+    }; 
 
     private async Task LoadTestData(LoadDataArgs args)
     {

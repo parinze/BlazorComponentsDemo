@@ -1,4 +1,5 @@
 ﻿@page "/radzendatagridstmt"
+@using System.Linq.Dynamic.Core
 @inject IDataAccessService _dataAccessService
 @inject HttpClient Http
 
@@ -77,6 +78,13 @@
         statements = statementsPlaceholder;
 
         var query = statements.AsQueryable();
+
+        // Enable sorting with Dynamic LINQ (System.Linq.Dynamic.Core)
+        if (!string.IsNullOrEmpty(args.OrderBy))
+        {
+            // Sort via the OrderBy method
+            query = query.OrderBy(args.OrderBy);
+        }
 
         count = query?.Count() ?? 0;
 
