@@ -1,0 +1,371 @@
+﻿@page "/radzendatagridedit"
+@using System.Linq.Dynamic.Core
+@inject IDataAccessService _dataAccessService
+@inject HttpClient Http
+
+<h3>Radzen DataGrid TreatmentCardGrid</h3>
+
+<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.End" Gap="10px" class="mt-2 mb-4" >
+    <RadzenButton Image="assets/images/addnewrowbutton.svg"
+                  Click="@InsertRow" 
+                  Disabled="@(radzenEditMode == DataGridEditMode.Single && recordsToInsert.Count() > 0)"
+                  Style="float:right;background-color:white" />
+</RadzenStack>
+
+<DataGridRadzen @ref="@dataGridParentRef"
+                Data=@treatmentCardGridData
+                TType="TreatmentCardGrid"
+                IsLoading="@loadingTreatmentCardGrid"
+                LoadData="@LoadTreatmentCardGrid"
+                QueryCount="@count"
+                RadzenEditMode="@radzenEditMode">
+
+    <CustomColumnsMarkup>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Date" Title="Date" FormatString="{0:MM/dd/yyyy}"></RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Type" Title="Type" Context="treatment">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.Type
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenTextBox @bind-Value="treatment.Type" Style="width:200px; display: block" Name="Type" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Asst" Title="ASST">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.Asst
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenTextBox @bind-Value="treatment.Asst" Style="width:200px; display: block" Name="Asst" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Proc" Title="PROC">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.Proc
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenTextBox @bind-Value="treatment.Proc" Style="width:200px; display: block" Name="Proc" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="DR" Title="DR">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.DR
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenTextBox @bind-Value="treatment.DR" Style="width:200px; display: block" Name="DR" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="TxNotes" Title="Tx Notes">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.TxNotes
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenTextBox @bind-Value="treatment.TxNotes" Style="width:200px; display: block" Name="TxNotes" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="AWU" Title="AWU">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.AWU
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenTextBox @bind-Value="treatment.AWU" Style="width:200px; display: block" Name="AWU" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="BB" Title="BB">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.BB
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenTextBox @bind-Value="treatment.BB" Style="width:200px; display: block" Name="BB" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="AWL" Title="AWL">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.AWL
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenTextBox @bind-Value="treatment.AWL" Style="width:200px; display: block" Name="AWL" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="OH" Title="OH">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.OH
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenTextBox @bind-Value="treatment.OH" Style="width:200px; display: block" Name="OH" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="EL" Title="E/L">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.EL
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenTextBox @bind-Value="treatment.EL" Style="width:200px; display: block" Name="EL" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="NVT" Title="NVT">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.NVT
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenTextBox @bind-Value="treatment.NVT" Style="width:200px; display: block" Name="NVT" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="WKS" Title="WKS">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.WKS
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenNumeric @bind-Value="treatment.WKS" Style="width:200px; display: block" Name="WKS" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Chart" Title="Chart">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.Chart
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenTextBox @bind-Value="treatment.Chart" Style="width:200px; display: block" Name="Chart" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Test" Title="Test">
+            <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.Test
+                </span>
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenTextBox @bind-Value="treatment.Test" Style="width:200px; display: block" Name="Test" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Context="treatment" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true">
+            <Template Context="treatment">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(treatment))" @onclick:stopPropagation="true">
+                </RadzenButton>
+                @if (treatment.Date.Year >= 2020)
+                {
+                    <button class="btn btn-light btn-flat btn-medium" @onclick="@(args => DeleteRow(treatment))" @onclick:stopPropagation="true">
+                        <img src="assets/images/trashicon-enabled.svg" width="21" height="21" />
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-light btn-flat btn-medium" style="cursor:default">
+                        <img src="assets/images/trashicon-disabled.svg" width="21" height="21" />
+                    </button>
+                }
+            </Template>
+            <EditTemplate Context="treatment">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(treatment))">
+                </RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(treatment))">
+                </RadzenButton>
+                @if (treatment.Date.Year >= 2020)
+                {
+                    <button class="btn btn-light btn-flat btn-medium" @onclick="@(args => DeleteRow(treatment))" @onclick:stopPropagation="true">
+                        <img src="assets/images/trashicon-enabled.svg" width="21" height="21" />
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-light btn-flat btn-medium" style="cursor:default">
+                        <img src="assets/images/trashicon-disabled.svg" width="21" height="21" />
+                    </button>
+                }
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </CustomColumnsMarkup>
+
+</DataGridRadzen>
+
+@* <button class="btn btn-primary" onclick="@(() => UpdateFirstTestDataRecord())">Update Status for First Record</button> *@
+
+@* <DataGridRadzen Data=@testData
+                TType="PeopleTestData"
+                PropertyToHeaderName="@propertyToHeaderNames"
+                Statuses="@statuses"
+                IsLoading="@loadingTestData"
+                LoadData="@LoadTestData"
+                QueryCount="@count"
+                ExcludedColumns="@excludedColumns"
+                Updated=@updated /> *@
+
+@code {
+    private DataGridRadzen<TreatmentCardGrid> dataGridParentRef;
+    private List<TreatmentCardGrid>? treatmentCardGridData;
+    private bool loadingTreatmentCardGrid { get; set; }
+    private int count;
+    private DataGridEditMode radzenEditMode = DataGridEditMode.Single;
+
+    private async Task LoadTreatmentCardGrid(LoadDataArgs args)
+    {
+        loadingTreatmentCardGrid = true;
+
+        treatmentCardGridData = await Http.GetFromJsonAsync<List<TreatmentCardGrid>>("sample-data/treatmentgrid.json");
+
+        var query = treatmentCardGridData.AsQueryable();
+
+        // Enable sorting with Dynamic LINQ (System.Linq.Dynamic.Core)
+        if (!string.IsNullOrEmpty(args.OrderBy))
+        {
+            // Sort via the OrderBy method
+            query = query.OrderBy(args.OrderBy);
+        }
+
+        count = query?.Count() ?? 0;
+
+        await Task.Delay(2000);
+
+        treatmentCardGridData = await Task.FromResult(query.Skip(args.Skip.Value).Take(args.Top.Value).ToList());
+
+        loadingTreatmentCardGrid = false;
+    }
+
+    private List<TreatmentCardGrid> recordsToInsert = new List<TreatmentCardGrid>();
+    private List<TreatmentCardGrid> recordsToUpdate = new List<TreatmentCardGrid>();
+
+    private void Reset()
+    {
+        recordsToInsert.Clear();
+        recordsToUpdate.Clear();
+    }
+
+    private void Reset(TreatmentCardGrid treatment)
+    {
+        recordsToInsert.Remove(treatment);
+        recordsToUpdate.Remove(treatment);
+    }
+
+    private async Task EditRow(TreatmentCardGrid treatment)
+    {
+        await dataGridParentRef.dataGridRef.EditRow(treatment);
+
+        // placeholder for DB interaction
+    }
+
+    private async Task SaveRow(TreatmentCardGrid treatment)
+    {
+        await dataGridParentRef.dataGridRef.UpdateRow(treatment);
+
+        // placeholder for DB interaction
+    }
+
+    private void CancelEdit(TreatmentCardGrid treatment)
+    {
+        Reset(treatment);
+        dataGridParentRef.dataGridRef.CancelEditRow(treatment);
+
+        // placeholder for DB interaction
+    }
+
+    private void DeleteRow(TreatmentCardGrid treatment)
+    {
+        Console.WriteLine($"DeleteRow invoked, current TreatmentCardGrid ASST: {treatment.Asst}");
+        // placeholder for DB interaction
+    }
+
+    private async Task InsertRow()
+    {
+        if (dataGridParentRef.dataGridRef.EditMode == DataGridEditMode.Single)
+        {
+            Reset();
+        }
+
+        var treatment = new TreatmentCardGrid();
+        recordsToInsert.Add(treatment);
+        await dataGridParentRef.dataGridRef.InsertRow(treatment);
+
+        // placeholder for DB interaction
+    }
+
+    // private IEnumerable<PeopleTestData>? testData;
+    // private PeopleTestData? firstTestDataRecord;
+    // private bool loadingTestData { get; set; }
+    // private int count;
+    // private bool updated;
+
+    // Dictionary<string, string> propertyToHeaderNames = new()
+    // {
+    //     {"FirstName", "First Name"},
+    //     {"LastName", "Last Name"},
+    //     {"BirthDate", "Birth Date"}
+    // };
+
+    // private List<Status> statuses { get; set; } = new List<Status>() {
+    //     new Status() { Label = "true", Style = "background-color:#E5F2E8;color:#28A745;"},
+    //     new Status() { Label = "false", Style = "background-color:#FAE5E5;color:#DC5151;"}
+    // };
+
+    // private List<string> excludedColumns = new List<string> { "Id" };
+
+    // private async Task LoadTestData(LoadDataArgs args)
+    // {
+
+    //     loadingTestData = true;
+
+    //     testData = await _dataAccessService.GetPeopleTestData();
+    //     firstTestDataRecord = testData.FirstOrDefault();
+
+    //     var query = testData.AsQueryable();
+
+    //     // Enable sorting with Dynamic LINQ (System.Linq.Dynamic.Core)
+    //     if (!string.IsNullOrEmpty(args.OrderBy))
+    //     {
+    //         // Sort via the OrderBy method
+    //         query = query.OrderBy(args.OrderBy);
+    //     }
+
+    //     count = query?.Count() ?? 0;
+
+    //     await Task.Delay(2000);
+
+    //     testData = await Task.FromResult(query.Skip(args.Skip.Value).Take(args.Top.Value).ToList());
+
+    //     loadingTestData = false;
+    // }
+
+    // private async Task UpdateFirstTestDataRecord()
+    // {
+    //     if (firstTestDataRecord != null)
+    //     {
+    //         string status = firstTestDataRecord.Status == "true" ? "false" : "true";
+
+    //         var updatedFirstRecord = new PeopleTestData
+    //             {
+    //                 Id = firstTestDataRecord.Id,
+    //                 FirstName = firstTestDataRecord.FirstName,
+    //                 LastName = firstTestDataRecord.LastName,
+    //                 BirthDate = firstTestDataRecord.BirthDate,
+    //                 Email = firstTestDataRecord.Email,
+    //                 Status = status
+    //             };
+
+    //         await _dataAccessService.UpdatePeopleTestDataStatus(updatedFirstRecord.Id, updatedFirstRecord);
+    //         updated = true;
+    //     }
+    // }
+}

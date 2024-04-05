@@ -2,22 +2,30 @@
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
 using Radzen;
+using System;
+using Microsoft.AspNetCore.Components.Web;
+using Radzen.Blazor.Rendering;
 
 namespace BlazorComponentsDemo.ComponentsLibrary
 {
 	public class DataGridRadzenModel<TType> : ComponentBase
 	{
         #region Variable Declaration
-        protected RadzenDataGrid<TType> dataGrid;
+        public RadzenDataGrid<TType> dataGridRef;
+		public RadzenContextMenu contextMenuRef;
 		protected IEnumerable<int> PageSizeOptions { get; set; } = new int[] { 10, 20, 50, 100, 500 };
 		protected int pageSize = 10;
 		protected string pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
 		protected bool isReloading = false;
 
-		/// <summary>
-		/// An array of <typeparamref name="TType"/> objects.
-		/// </summary>
-		[Parameter][EditorRequired] public IEnumerable<TType>? Data { get; set; }
+        protected List<TType> rowsToInsert = new List<TType>();
+
+        [Inject] protected ContextMenuService ContextMenuService { get; set; }
+
+        /// <summary>
+        /// An array of <typeparamref name="TType"/> objects.
+        /// </summary>
+        [Parameter][EditorRequired] public IEnumerable<TType>? Data { get; set; }
 
 		/// <summary>
 		/// A function to load data (as a queryable collection) into the data grid.
@@ -39,11 +47,21 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 		/// </summary>
 		[Parameter][EditorRequired] public int QueryCount { get; set; }
 
+        /// <summary>
+        /// A optional render fragment to include custom columns in the data grid.
+        /// </summary>
+        [Parameter] public RenderFragment? CustomColumnsMarkup { get; set; }
+
 		/// <summary>
-		/// A string value to specify the date format to be used in the data grid.
-		/// <para>Default: "{0:MM/dd/yyyy HH:mm}"</para>
+		/// A RadzenDataGridEditMode enum value to specify the edit mode of the data grid.
 		/// </summary>
-		[Parameter] public string DateFormat { get; set; } = "{0:MM/dd/yyyy HH:mm}";
+        [Parameter] public DataGridEditMode RadzenEditMode { get; set; }
+
+        /// <summary>
+        /// A string value to specify the date format to be used in the data grid.
+        /// <para>Default: "{0:MM/dd/yyyy HH:mm}"</para>
+        /// </summary>
+        [Parameter] public string DateFormat { get; set; } = "{0:MM/dd/yyyy HH:mm}";
 
 		/// <summary>
 		/// Dictionary mapping of the property names of <typeparamref name="TType"/> class to desired column header names.
@@ -78,7 +96,7 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 			if (Updated && !isReloading)
 			{
 				isReloading = true;
-				await dataGrid.Reload();
+				await dataGridRef.Reload();
 				isReloading = false;
 				Updated = false;
 			}
@@ -97,6 +115,40 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 			{
 				return propertyName;
 			}
+		}
+
+   //     protected void ShowContextMenu(MouseEventArgs args)
+   //     {
+   //         ContextMenuService.Open(args,
+			//	new List<ContextMenuItem> {
+			//		// icons are from Material Icons UI (https://materialui.co/icons)
+			//		new ContextMenuItem(){ Text = "Edit Row", Value = 2, Icon = "edit" },
+			//		new ContextMenuItem(){ Text = "Add Row", Value = 1, Icon = "add" },
+			//	},
+			//(e) => {
+			//	Console.WriteLine($"Menu item with Value={e.Value} clicked. Column: {args.Column.Property}");
+			//}
+			//);
+   //     }
+
+        protected void OnCellContextMenu(DataGridCellMouseEventArgs<TType> args)
+        {
+			ContextMenuService.Open(
+				args,
+				new List<ContextMenuItem> {
+					// icons are from Material Icons UI (https://materialui.co/icons)
+					new ContextMenuItem(){ Text = "Edit Row", Value = 1, Icon = "edit" },
+				},
+				(e) =>
+				{
+					Console.WriteLine($"Menu item with Value={e.Value} clicked. Column: {args.Column.Property}");
+
+					if (e.Text == "Edit Row")
+					{
+						dataGridRef.EditRow(args.Data);
+					}
+				}
+			);
 		}
         #endregion
     }

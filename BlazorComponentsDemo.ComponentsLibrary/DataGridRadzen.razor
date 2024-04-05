@@ -1,8 +1,16 @@
 ﻿@typeparam TType
 @inherits DataGridRadzenModel<TType>
 
+<RadzenContextMenu />
+@* <RadzenContextMenu @ref="contextMenuRef">
+    <RadzenMenuItem Text="Edit Row" ></RadzenMenuItem>
+</RadzenContextMenu> *@
+@* <button @onclick=@(args => ShowContextMenu(args)) @onclick:preventDefault="true">
+    Open Context Menu
+</button> *@
+
 <RadzenDataGrid 
-	@ref="dataGrid"
+	@ref="dataGridRef"
 	AllowColumnResize="true"
 	AllowSorting="true"
 	AllowPaging="true"
@@ -16,49 +24,58 @@
 	IsLoading="@IsLoading" 
 	TItem="@TType"
 	GridLines="Radzen.DataGridGridLines.Both"
-	Count="@QueryCount">
-	<Columns>
-		@foreach (var property in typeof(TType).GetProperties())
-		{
-			@if (property.PropertyType.FullName == typeof(DateTime).FullName
-					|| property.PropertyType.FullName == typeof(DateTime?).FullName
-					|| property.PropertyType.FullName == typeof(DateTimeOffset).FullName
-					|| property.PropertyType.FullName == typeof(DateTimeOffset?).FullName)
-			{
-				<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@GetPropertyHeaderName(property.Name)" FormatString="@DateFormat" />
-			}
-			else if (ExcludedColumns.Contains(property.Name))
-			{
-				continue;
-			}
-			else if (property.Name == "Status")
-			{
-				<RadzenDataGridColumn TItem="TType" Property="Status" Title="Status">
-					<Template>
-						@{
-							var properties = context.GetType().GetProperties();
-							var statusColumnProperty = properties.Single(p => p.Name == "Status");
-							var propertyValue = statusColumnProperty.GetValue(context);
+	Count="@QueryCount"
+    EditMode="@RadzenEditMode"
+    CellContextMenu="OnCellContextMenu">
+    <Columns>
+        @if (CustomColumnsMarkup != null)
+        {
+            @CustomColumnsMarkup
+        }
+        else
+        {
+            @foreach (var property in typeof(TType).GetProperties())
+            {
+                if (property.PropertyType.FullName == typeof(DateTime).FullName
+                || property.PropertyType.FullName == typeof(DateTime?).FullName
+                || property.PropertyType.FullName == typeof(DateTimeOffset).FullName
+                || property.PropertyType.FullName == typeof(DateTimeOffset?).FullName)
+                {
+                    <RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@GetPropertyHeaderName(property.Name)" FormatString="@DateFormat" />
+                }
+                else if (ExcludedColumns.Contains(property.Name))
+                {
+                    continue;
+                }
+                else if (property.Name == "Status")
+                {
+                    <RadzenDataGridColumn TItem="TType" Property="Status" Title="Status" >
+                        <Template>
+                            @{
+                                var properties = context.GetType().GetProperties();
+                                var statusColumnProperty = properties.Single(p => p.Name == "Status");
+                                var propertyValue = statusColumnProperty.GetValue(context);
 
-							var status = Statuses.FirstOrDefault(s => s.Label == propertyValue!.ToString());
+                                var status = Statuses.FirstOrDefault(s => s.Label == propertyValue!.ToString());
 
-							if(status != null)
-							{
-								<div class="badge badge-pill" style="font-size:12px;@status.Style">@status.Label</div>
-							}
-							else
-							{
-								<div class="badge badge-pill" style="font-size:12px;background-color:#DAD9D9;color:#636262;">@propertyValue</div>
-							}
-						}
-					</Template>
-				</RadzenDataGridColumn>
+                                if (status != null)
+                                {
+                                    <div class="badge badge-pill" style="font-size:12px;@status.Style">@status.Label</div>
+                                }
+                                else
+                                {
+                                    <div class="badge badge-pill" style="font-size:12px;background-color:#DAD9D9;color:#636262;">@propertyValue</div>
+                                }
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+                }
+                else
+                {
+                    <RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@GetPropertyHeaderName(property.Name)" />
+                }
+            }
+        }
 
-			}
-			else
-			{
-				<RadzenDataGridColumn TItem="TType" Property="@property.Name" Title="@GetPropertyHeaderName(property.Name)" />
-			}
-		}
-	</Columns>
+    </Columns>
 </RadzenDataGrid>
