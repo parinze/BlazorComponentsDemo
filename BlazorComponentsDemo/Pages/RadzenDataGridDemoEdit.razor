@@ -5,6 +5,8 @@
 
 <h3>Radzen DataGrid TreatmentCardGrid</h3>
 
+<div style="color:red; font-weight:bold">@deleteConsoleOutput</div>
+
 <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.End" Gap="10px" class="mt-2 mb-4" >
     <RadzenButton Image="assets/images/addnewrowbutton.svg"
                   Click="@InsertRow" 
@@ -18,18 +20,20 @@
                 IsLoading="@loadingTreatmentCardGrid"
                 LoadData="@LoadTreatmentCardGrid"
                 QueryCount="@count"
-                RadzenEditMode="@radzenEditMode">
+                RadzenEditMode="@radzenEditMode"
+                CellRender="@CellRender">
 
     <CustomColumnsMarkup>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Date" Title="Date" FormatString="{0:MM/dd/yyyy}"></RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Type" Title="Type" Context="treatment">
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Type" Title="T" Context="treatment">
             <Template Context="treatment">
                 <span @ondblclick="async () => await EditRow(treatment)">
                     @treatment.Type
                 </span>
             </Template>
             <EditTemplate Context="treatment">
-                <RadzenTextBox @bind-Value="treatment.Type" Style="width:200px; display: block" Name="Type" />
+                <RadzenDropDown @bind-Value="treatment.Type" Name="Type" Data="@entryTypes" Style="width:200px; display: block;" />
+                <RadzenRequiredValidator Text="Entry type is required" Component="Type" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Asst" Title="ASST">
@@ -166,7 +170,7 @@
             <Template Context="treatment">
                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(treatment))" @onclick:stopPropagation="true">
                 </RadzenButton>
-                @if (treatment.Date.Year >= 2020)
+                @if (treatment.Date.Year >= 2019)
                 {
                     <button class="btn btn-light btn-flat btn-medium" @onclick="@(args => DeleteRow(treatment))" @onclick:stopPropagation="true">
                         <img src="assets/images/trashicon-enabled.svg" width="21" height="21" />
@@ -202,17 +206,6 @@
 
 </DataGridRadzen>
 
-@* <button class="btn btn-primary" onclick="@(() => UpdateFirstTestDataRecord())">Update Status for First Record</button> *@
-
-@* <DataGridRadzen Data=@testData
-                TType="PeopleTestData"
-                PropertyToHeaderName="@propertyToHeaderNames"
-                Statuses="@statuses"
-                IsLoading="@loadingTestData"
-                LoadData="@LoadTestData"
-                QueryCount="@count"
-                ExcludedColumns="@excludedColumns"
-                Updated=@updated /> *@
 
 @code {
     private DataGridRadzen<TreatmentCardGrid> dataGridParentRef;
@@ -220,6 +213,8 @@
     private bool loadingTreatmentCardGrid { get; set; }
     private int count;
     private DataGridEditMode radzenEditMode = DataGridEditMode.Single;
+    private List<string> entryTypes = new List<string>() { "C", "V" };
+    private string? deleteConsoleOutput;
 
     private async Task LoadTreatmentCardGrid(LoadDataArgs args)
     {
@@ -227,7 +222,7 @@
 
         treatmentCardGridData = await Http.GetFromJsonAsync<List<TreatmentCardGrid>>("sample-data/treatmentgrid.json");
 
-        var query = treatmentCardGridData.AsQueryable();
+        var query = treatmentCardGridData?.AsQueryable();
 
         // Enable sorting with Dynamic LINQ (System.Linq.Dynamic.Core)
         if (!string.IsNullOrEmpty(args.OrderBy))
@@ -269,6 +264,15 @@
 
     private async Task SaveRow(TreatmentCardGrid treatment)
     {
+        if (treatment.Type == "C")
+        {
+            // save comment entry in db
+        }
+        else if (treatment.Type == "V")
+        {
+            // save visit entry in db
+        }
+
         await dataGridParentRef.dataGridRef.UpdateRow(treatment);
 
         // placeholder for DB interaction
@@ -279,12 +283,18 @@
         Reset(treatment);
         dataGridParentRef.dataGridRef.CancelEditRow(treatment);
 
+        // in some cases (such as changing the entry type from V to C), CancelEditRow does not cancel as expected
+        // will need to reload datagrid to show that the row has not changed
+        dataGridParentRef.dataGridRef.Reload();
+
         // placeholder for DB interaction
     }
 
     private void DeleteRow(TreatmentCardGrid treatment)
     {
-        Console.WriteLine($"DeleteRow invoked, current TreatmentCardGrid ASST: {treatment.Asst}");
+        var output = $"DeleteRow invoked, current TreatmentCardGrid ASST: {treatment.Asst}";
+        Console.WriteLine(output);
+        deleteConsoleOutput = output;
         // placeholder for DB interaction
     }
 
@@ -298,74 +308,18 @@
         var treatment = new TreatmentCardGrid();
         recordsToInsert.Add(treatment);
         await dataGridParentRef.dataGridRef.InsertRow(treatment);
+        Reset();
 
         // placeholder for DB interaction
     }
 
-    // private IEnumerable<PeopleTestData>? testData;
-    // private PeopleTestData? firstTestDataRecord;
-    // private bool loadingTestData { get; set; }
-    // private int count;
-    // private bool updated;
+    private void CellRender(DataGridCellRenderEventArgs<TreatmentCardGrid> args)
+    {
+        if (args.Data.Type == "C" && args.Column.Property == "Asst")
+        {
+            args.Attributes.Add("style", "background-color:white");
+            args.Attributes.Add("colspan", 13);
+        }
+    }
 
-    // Dictionary<string, string> propertyToHeaderNames = new()
-    // {
-    //     {"FirstName", "First Name"},
-    //     {"LastName", "Last Name"},
-    //     {"BirthDate", "Birth Date"}
-    // };
-
-    // private List<Status> statuses { get; set; } = new List<Status>() {
-    //     new Status() { Label = "true", Style = "background-color:#E5F2E8;color:#28A745;"},
-    //     new Status() { Label = "false", Style = "background-color:#FAE5E5;color:#DC5151;"}
-    // };
-
-    // private List<string> excludedColumns = new List<string> { "Id" };
-
-    // private async Task LoadTestData(LoadDataArgs args)
-    // {
-
-    //     loadingTestData = true;
-
-    //     testData = await _dataAccessService.GetPeopleTestData();
-    //     firstTestDataRecord = testData.FirstOrDefault();
-
-    //     var query = testData.AsQueryable();
-
-    //     // Enable sorting with Dynamic LINQ (System.Linq.Dynamic.Core)
-    //     if (!string.IsNullOrEmpty(args.OrderBy))
-    //     {
-    //         // Sort via the OrderBy method
-    //         query = query.OrderBy(args.OrderBy);
-    //     }
-
-    //     count = query?.Count() ?? 0;
-
-    //     await Task.Delay(2000);
-
-    //     testData = await Task.FromResult(query.Skip(args.Skip.Value).Take(args.Top.Value).ToList());
-
-    //     loadingTestData = false;
-    // }
-
-    // private async Task UpdateFirstTestDataRecord()
-    // {
-    //     if (firstTestDataRecord != null)
-    //     {
-    //         string status = firstTestDataRecord.Status == "true" ? "false" : "true";
-
-    //         var updatedFirstRecord = new PeopleTestData
-    //             {
-    //                 Id = firstTestDataRecord.Id,
-    //                 FirstName = firstTestDataRecord.FirstName,
-    //                 LastName = firstTestDataRecord.LastName,
-    //                 BirthDate = firstTestDataRecord.BirthDate,
-    //                 Email = firstTestDataRecord.Email,
-    //                 Status = status
-    //             };
-
-    //         await _dataAccessService.UpdatePeopleTestDataStatus(updatedFirstRecord.Id, updatedFirstRecord);
-    //         updated = true;
-    //     }
-    // }
 }

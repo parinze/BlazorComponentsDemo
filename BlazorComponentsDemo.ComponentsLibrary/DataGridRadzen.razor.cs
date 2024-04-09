@@ -2,13 +2,10 @@
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
 using Radzen;
-using System;
-using Microsoft.AspNetCore.Components.Web;
-using Radzen.Blazor.Rendering;
 
 namespace BlazorComponentsDemo.ComponentsLibrary
 {
-	public class DataGridRadzenModel<TType> : ComponentBase
+    public class DataGridRadzenModel<TType> : ComponentBase
 	{
         #region Variable Declaration
         public RadzenDataGrid<TType> dataGridRef;
@@ -19,8 +16,6 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 		protected bool isReloading = false;
 
         protected List<TType> rowsToInsert = new List<TType>();
-
-        [Inject] protected ContextMenuService ContextMenuService { get; set; }
 
         /// <summary>
         /// An array of <typeparamref name="TType"/> objects.
@@ -35,17 +30,22 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 		/// <para>OrderBy: string (sort expression as a string)</para>
 		/// <para>Filter: string (filter expression as a string)</para>
 		/// </summary>
-		[Parameter][EditorRequired] public Func<LoadDataArgs, Task> LoadData { get; set; }
+		[Parameter][EditorRequired] public Func<LoadDataArgs, Task> LoadData { get; set; } = default!;
 
-		/// <summary>
-		/// A boolean value to indicate if the data grid is loading.
-		/// </summary>
-		[Parameter][EditorRequired] public bool IsLoading { get; set; }
+        /// <summary>
+        /// A boolean value to indicate if the data grid is loading.
+        /// </summary>
+        [Parameter][EditorRequired] public bool IsLoading { get; set; }
 
 		/// <summary>
 		/// The total number of records in the queryable data collection to be loaded into the data grid.
 		/// </summary>
 		[Parameter][EditorRequired] public int QueryCount { get; set; }
+
+		/// <summary>
+		/// A function to handle how the data grid renders each cell based on the specified column and/or criteria.
+		/// </summary>
+		[Parameter] public Action<DataGridCellRenderEventArgs<TType>> CellRender { get; set; } = (args) => { };
 
         /// <summary>
         /// A optional render fragment to include custom columns in the data grid.
@@ -115,40 +115,6 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 			{
 				return propertyName;
 			}
-		}
-
-   //     protected void ShowContextMenu(MouseEventArgs args)
-   //     {
-   //         ContextMenuService.Open(args,
-			//	new List<ContextMenuItem> {
-			//		// icons are from Material Icons UI (https://materialui.co/icons)
-			//		new ContextMenuItem(){ Text = "Edit Row", Value = 2, Icon = "edit" },
-			//		new ContextMenuItem(){ Text = "Add Row", Value = 1, Icon = "add" },
-			//	},
-			//(e) => {
-			//	Console.WriteLine($"Menu item with Value={e.Value} clicked. Column: {args.Column.Property}");
-			//}
-			//);
-   //     }
-
-        protected void OnCellContextMenu(DataGridCellMouseEventArgs<TType> args)
-        {
-			ContextMenuService.Open(
-				args,
-				new List<ContextMenuItem> {
-					// icons are from Material Icons UI (https://materialui.co/icons)
-					new ContextMenuItem(){ Text = "Edit Row", Value = 1, Icon = "edit" },
-				},
-				(e) =>
-				{
-					Console.WriteLine($"Menu item with Value={e.Value} clicked. Column: {args.Column.Property}");
-
-					if (e.Text == "Edit Row")
-					{
-						dataGridRef.EditRow(args.Data);
-					}
-				}
-			);
 		}
         #endregion
     }

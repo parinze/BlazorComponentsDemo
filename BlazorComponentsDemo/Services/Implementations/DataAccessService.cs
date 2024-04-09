@@ -1,12 +1,6 @@
-﻿using Azure;
-using BlazorComponentsDemo.DataModels.Models;
+﻿using BlazorComponentsDemo.DataModels.Models;
 using BlazorComponentsDemo.Services.Contracts;
-using System;
-using System.Net.Http.Json;
 using System.Text;
-using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Text.Json.Serialization;
 using BlazorComponentsDemo.DataModels.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;

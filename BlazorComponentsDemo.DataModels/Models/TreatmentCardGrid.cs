@@ -14,7 +14,7 @@
 		public string? OH { get; set; }
 		public string? EL { get; set; }
 		public string? NVT { get; set; }
-		public int WKS { get; set; }
+		public int? WKS { get; set; }
 		public string? Chart { get; set; }
 		public string? Test { get; set; }
     }

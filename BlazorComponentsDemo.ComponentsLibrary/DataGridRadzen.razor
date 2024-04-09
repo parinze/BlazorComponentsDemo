@@ -1,14 +1,6 @@
 ﻿@typeparam TType
 @inherits DataGridRadzenModel<TType>
 
-<RadzenContextMenu />
-@* <RadzenContextMenu @ref="contextMenuRef">
-    <RadzenMenuItem Text="Edit Row" ></RadzenMenuItem>
-</RadzenContextMenu> *@
-@* <button @onclick=@(args => ShowContextMenu(args)) @onclick:preventDefault="true">
-    Open Context Menu
-</button> *@
-
 <RadzenDataGrid 
 	@ref="dataGridRef"
 	AllowColumnResize="true"
@@ -26,7 +18,7 @@
 	GridLines="Radzen.DataGridGridLines.Both"
 	Count="@QueryCount"
     EditMode="@RadzenEditMode"
-    CellContextMenu="OnCellContextMenu">
+    CellRender="@CellRender">
     <Columns>
         @if (CustomColumnsMarkup != null)
         {
