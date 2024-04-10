@@ -29,6 +29,8 @@
                     @treatment.Type
                 </span>
             </Template>
+
+            @* WILL NEED TO REMOVE ONCE MODAL IS IN PLACE*@
             <EditTemplate Context="treatment">
                 <RadzenDropDown @bind-Value="treatment.Type" Name="Type" Data="@entryTypes" Style="width:200px; display: block;" />
                 <RadzenRequiredValidator Text="Entry type is required" Component="Type" Popup="true" />
@@ -42,6 +44,7 @@
             </Template>
             <EditTemplate Context="treatment">
                 <RadzenTextBox @bind-Value="treatment.Asst" Style="width:200px; display: block" Name="Asst" />
+                <RadzenRequiredValidator Text="Asst is required" Component="Asst" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Proc" Title="PROC">
@@ -164,10 +167,8 @@
                 <RadzenTextBox @bind-Value="treatment.Test" Style="width:200px; display: block" Name="Test" />
             </EditTemplate>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Context="treatment" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true">
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Context="treatment" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true">
             <Template Context="treatment">
-                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(treatment))" @onclick:stopPropagation="true">
-                </RadzenButton>
                 @if (treatment.Date.Year >= 2019)
                 {
                     <button class="btn btn-light btn-flat btn-medium" @onclick="@(args => DeleteRow(treatment))" @onclick:stopPropagation="true">
@@ -218,7 +219,7 @@
         loadingTreatmentCardGrid = true;
 
         // treatmentCardGridData = await Http.GetFromJsonAsync<List<TreatmentCardGrid>>("sample-data/treatmentgrid.json");
-        var data = _dataAccessService.GetTreatmentCardEntries();
+        var data = await _dataAccessService.GetTreatmentCardEntries();
 
         var query = data?.AsQueryable();
 
@@ -274,6 +275,7 @@
         }
 
         await dataGridParentRef.dataGridRef.UpdateRow(treatmentEntry);
+        _dataAccessService.HandleTreatmentCardEntry(treatmentEntry, false);
 
         // placeholder for DB interaction
     }
@@ -294,7 +296,7 @@
     {
         var output = $"DeleteRow invoked, current TreatmentCardGrid ASST: {treatmentEntry.Asst}";
 
-        _dataAccessService.DeleteTreatmentCardEntry(treatmentEntry);
+        _dataAccessService.HandleTreatmentCardEntry(treatmentEntry, true);
         dataGridParentRef.dataGridRef.Reload();
 
         // placeholder for DB interaction

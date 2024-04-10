@@ -10,9 +10,10 @@ namespace BlazorComponentsDemo.Services.Contracts
         Task<List<PeopleTestData>> GetPeopleTestData();
         Task<bool> UpdatePeopleTestDataStatus(int id, PeopleTestData testDataRecord);
         Task<StatementQueryVm> GetStatements();
-        List<TreatmentCardGrid> GetTreatmentCardEntries();
+        Task<List<TreatmentCardGrid>> GetTreatmentCardEntries();
+        void HandleTreatmentCardEntry(TreatmentCardGrid treatmentEntry, bool delete);
         void AddTreatmentCardEntry(TreatmentCardGrid treatmentEntry);
-        void UpdateTreatmentCardEntry(TreatmentCardGrid treatmentEntry);
+        void UpdateTreatmentCardEntry(TreatmentCardGrid treatmentEntry, TreatmentCardGrid existingEntry);
         void DeleteTreatmentCardEntry(TreatmentCardGrid treatmentEntry);
     }
 }
