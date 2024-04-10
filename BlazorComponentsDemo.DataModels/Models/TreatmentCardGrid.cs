@@ -6,6 +6,7 @@
 		public DateTime Date { get; set; } = DateTime.Now;
 		public string? Type { get; set; }
 		public string? Asst { get; set; }
+		public string? Comment { get; set; }
 		public string? Proc { get; set; }
 		public string? DR { get; set; }
 		public string? TxNotes { get; set; }

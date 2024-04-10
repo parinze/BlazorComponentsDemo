@@ -101,7 +101,8 @@ namespace BlazorComponentsDemo.Services.Implementations
         {
             if (TreatmentCardGridEntries.Count == 0)
             {
-                var data =  await _httpClient.GetFromJsonAsync<List<TreatmentCardGrid>>("sample-data/treatmentgrid2.json");
+                //var data =  await _httpClient.GetFromJsonAsync<List<TreatmentCardGrid>>("sample-data/treatmentgrid2.json");
+                var data =  await _httpClient.GetFromJsonAsync<List<TreatmentCardGrid>>("sample-data/treatmentgrid3_comment.json");
 
                 if (data == null)
                 {

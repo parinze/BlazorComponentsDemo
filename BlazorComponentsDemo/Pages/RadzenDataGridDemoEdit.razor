@@ -244,7 +244,7 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Context="treatment" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true">
             <Template Context="treatment">
-                @if (treatment.Date.Year >= 2019)
+                @if (treatment.Date.Year >= 2020)
                 {
                     <button class="btn btn-light btn-flat btn-medium" style="cursor:pointer;background:none;outline:none;border:none" @onclick="@(args => DeleteRow(treatment))" @onclick:stopPropagation="true">
                         <img src="assets/images/trashicon-enabled.svg" width="21" height="21" />
@@ -386,10 +386,13 @@
 
     private void CellRender(DataGridCellRenderEventArgs<TreatmentCardGrid> args)
     {
-        if (args.Data.Type == "C" && args.Column.Property == "Asst")
+        if (args.Data.Type == "C" && args.Column.Property == "Proc")
         {
-            args.Attributes.Add("style", "background-color:white");
-            args.Attributes.Add("colspan", 13);
+            // override Proc column value
+            args.Data.Proc = args.Data.Comment;
+
+            // args.Attributes.Add("style", "background-color:white");
+            args.Attributes.Add("colspan", 12);
         }
     }
 
