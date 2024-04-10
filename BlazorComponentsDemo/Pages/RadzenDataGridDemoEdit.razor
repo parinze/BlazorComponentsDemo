@@ -5,8 +5,6 @@
 
 <h3>Radzen DataGrid TreatmentCardGrid</h3>
 
-<div style="color:red; font-weight:bold">@deleteConsoleOutput</div>
-
 <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.End" Gap="10px" class="mt-2 mb-4" >
     <RadzenButton Image="assets/images/addnewrowbutton.svg"
                   Click="@InsertRow" 
@@ -214,28 +212,30 @@
     private int count;
     private DataGridEditMode radzenEditMode = DataGridEditMode.Single;
     private List<string> entryTypes = new List<string>() { "C", "V" };
-    private string? deleteConsoleOutput;
 
     private async Task LoadTreatmentCardGrid(LoadDataArgs args)
     {
         loadingTreatmentCardGrid = true;
 
-        treatmentCardGridData = await Http.GetFromJsonAsync<List<TreatmentCardGrid>>("sample-data/treatmentgrid.json");
+        // treatmentCardGridData = await Http.GetFromJsonAsync<List<TreatmentCardGrid>>("sample-data/treatmentgrid.json");
+        var data = _dataAccessService.GetTreatmentCardEntries();
 
-        var query = treatmentCardGridData?.AsQueryable();
+        var query = data?.AsQueryable();
 
         // Enable sorting with Dynamic LINQ (System.Linq.Dynamic.Core)
         if (!string.IsNullOrEmpty(args.OrderBy))
         {
             // Sort via the OrderBy method
-            query = query.OrderBy(args.OrderBy);
+            query = query?.OrderBy(args.OrderBy);
         }
 
         count = query?.Count() ?? 0;
 
         await Task.Delay(2000);
 
-        treatmentCardGridData = await Task.FromResult(query.Skip(args.Skip.Value).Take(args.Top.Value).ToList());
+        data = await Task.FromResult(query?.Skip(args.Skip.Value).Take(args.Top.Value).ToList());
+
+        treatmentCardGridData = data;
 
         loadingTreatmentCardGrid = false;
     }
@@ -249,39 +249,39 @@
         recordsToUpdate.Clear();
     }
 
-    private void Reset(TreatmentCardGrid treatment)
+    private void Reset(TreatmentCardGrid treatmentEntry)
     {
-        recordsToInsert.Remove(treatment);
-        recordsToUpdate.Remove(treatment);
+        recordsToInsert.Remove(treatmentEntry);
+        recordsToUpdate.Remove(treatmentEntry);
     }
 
-    private async Task EditRow(TreatmentCardGrid treatment)
+    private async Task EditRow(TreatmentCardGrid treatmentEntry)
     {
-        await dataGridParentRef.dataGridRef.EditRow(treatment);
+        await dataGridParentRef.dataGridRef.EditRow(treatmentEntry);
 
         // placeholder for DB interaction
     }
 
-    private async Task SaveRow(TreatmentCardGrid treatment)
+    private async Task SaveRow(TreatmentCardGrid treatmentEntry)
     {
-        if (treatment.Type == "C")
+        if (treatmentEntry.Type == "C")
         {
             // save comment entry in db
         }
-        else if (treatment.Type == "V")
+        else if (treatmentEntry.Type == "V")
         {
             // save visit entry in db
         }
 
-        await dataGridParentRef.dataGridRef.UpdateRow(treatment);
+        await dataGridParentRef.dataGridRef.UpdateRow(treatmentEntry);
 
         // placeholder for DB interaction
     }
 
-    private void CancelEdit(TreatmentCardGrid treatment)
+    private void CancelEdit(TreatmentCardGrid treatmentEntry)
     {
-        Reset(treatment);
-        dataGridParentRef.dataGridRef.CancelEditRow(treatment);
+        Reset(treatmentEntry);
+        dataGridParentRef.dataGridRef.CancelEditRow(treatmentEntry);
 
         // in some cases (such as changing the entry type from V to C), CancelEditRow does not cancel as expected
         // will need to reload datagrid to show that the row has not changed
@@ -290,11 +290,13 @@
         // placeholder for DB interaction
     }
 
-    private void DeleteRow(TreatmentCardGrid treatment)
+    private void DeleteRow(TreatmentCardGrid treatmentEntry)
     {
-        var output = $"DeleteRow invoked, current TreatmentCardGrid ASST: {treatment.Asst}";
-        Console.WriteLine(output);
-        deleteConsoleOutput = output;
+        var output = $"DeleteRow invoked, current TreatmentCardGrid ASST: {treatmentEntry.Asst}";
+
+        _dataAccessService.DeleteTreatmentCardEntry(treatmentEntry);
+        dataGridParentRef.dataGridRef.Reload();
+
         // placeholder for DB interaction
     }
 

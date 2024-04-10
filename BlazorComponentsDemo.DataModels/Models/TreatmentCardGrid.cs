@@ -2,6 +2,7 @@
 {
 	public class TreatmentCardGrid
 	{
+		public int Id { get; set; }
 		public DateTime Date { get; set; } = DateTime.Now;
 		public string? Type { get; set; }
 		public string? Asst { get; set; }
