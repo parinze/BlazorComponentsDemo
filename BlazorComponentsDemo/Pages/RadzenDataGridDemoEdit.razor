@@ -5,11 +5,86 @@
 
 <h3>Radzen DataGrid TreatmentCardGrid</h3>
 
-<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.End" Gap="10px" class="mt-2 mb-4" >
+<DataGridDemoModal @ref="visitModal" Title="Visit Modal">
+    <EditForm Model=@newTreatmentCardEntry>
+            <div class="form-group">
+                <label for="new-treatment-asst">Assistant:</label>
+                <InputText id="new-treatment-asst" @bind-Value="@newTreatmentCardEntry.Asst" />
+            </div>
+            <div class="form-group">
+                <label for="new-treatment-proc">Procedure:</label>
+                <InputText id="new-treatment-proc" @bind-Value="@newTreatmentCardEntry.Proc" />
+            </div>
+            <div class="form-group">
+                <label for="new-treatment-dr">DR:</label>
+                <InputText id="new-treatment-dr" @bind-Value="@newTreatmentCardEntry.DR" />
+            </div>
+            <div class="form-group">
+                <label for="txNotes">Tx Notes:</label>
+                <InputText id="new-treatment-txNotes" @bind-Value="@newTreatmentCardEntry.TxNotes" />
+            </div>
+            <div class="form-group">
+                <label for="new-treatment-awu">AWU:</label>
+                <InputText id="new-treatment-awu" @bind-Value="@newTreatmentCardEntry.AWU" />
+            </div>
+            <div class="form-group">
+                <label for="new-treatment-bb">BB:</label>
+                <InputText id="new-treatment-bb" @bind-Value="@newTreatmentCardEntry.BB" />
+            </div>
+            <div class="form-group">
+                <label for="new-treatment-awl">AWL:</label>
+                <InputText id="new-treatment-awl" @bind-Value="@newTreatmentCardEntry.AWL" />
+            </div>
+            <div class="form-group">
+                <label for="new-treatment-oh">OH:</label>
+                <InputText id="new-treatment-oh" @bind-Value="@newTreatmentCardEntry.OH" />
+            </div>
+            <div class="form-group">
+                <label for="new-treatment-el">E/L:</label>
+                <InputText id="new-treatment-el" @bind-Value="@newTreatmentCardEntry.EL" />
+            </div>
+            <div class="form-group">
+                <label for="new-treatment-nvt">NVT:</label>
+                <InputText id="new-treatment-nvt" @bind-Value="@newTreatmentCardEntry.NVT" />
+            </div>
+            <div class="form-group">
+                <label for="new-treatment-wks">WKS:</label>
+                <InputNumber id="new-treatment-wks" @bind-Value="@newTreatmentCardEntry.WKS" />
+            </div>
+            <div class="form-group">
+                <label for="new-treatment-chart">Chart:</label>
+                <InputText id="new-treatment-chart" @bind-Value="@newTreatmentCardEntry.Chart" />
+            </div>
+            <div class="form-group">
+                <label for="new-treatment-test">Test:</label>
+                <InputText id="new-treatment-test" @bind-Value="@newTreatmentCardEntry.Test" />
+            </div>
+            <div class="form-group">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick="() => OnVisitFormSubmission()">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => visitModal.Close()">Close</button>
+                </div>
+            </div>
+        </EditForm>
+</DataGridDemoModal>
+
+<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.End" Gap="10px" class="mt-2 mb-4">
     <RadzenButton Image="assets/images/addnewrowbutton.svg"
-                  Click="@InsertRow" 
-                  Disabled="@(radzenEditMode == DataGridEditMode.Single && recordsToInsert.Count() > 0)"
-                  Style="float:right;background-color:white" />
+                    Click="@InsertRow"
+                    Disabled="@(radzenEditMode == DataGridEditMode.Single && recordsToInsert.Count() > 0)"
+                    Style="float:right;background-color:white" />
+
+    <div class="dropdown">
+        <a href="#" role="button" data-toggle="dropdown" aria-expanded="false" style="padding:0.5rem 1rem" @onclick:preventDefault="true">
+            <img src="assets/images/addnewrowbutton.svg" width="20" height="20" />
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-right">
+            <li><a class="dropdown-item" href="#" @onclick="() => visitModal.Open()" @onclick:preventDefault="true">Add A Visit</a></li>
+            @* <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>*@
+        </ul>
+    </div>
 </RadzenStack>
 
 <DataGridRadzen @ref="@dataGridParentRef"
@@ -171,13 +246,13 @@
             <Template Context="treatment">
                 @if (treatment.Date.Year >= 2019)
                 {
-                    <button class="btn btn-light btn-flat btn-medium" @onclick="@(args => DeleteRow(treatment))" @onclick:stopPropagation="true">
+                    <button class="btn btn-light btn-flat btn-medium" style="cursor:pointer;background:none;outline:none;border:none" @onclick="@(args => DeleteRow(treatment))" @onclick:stopPropagation="true">
                         <img src="assets/images/trashicon-enabled.svg" width="21" height="21" />
                     </button>
                 }
                 else
                 {
-                    <button class="btn btn-light btn-flat btn-medium" style="cursor:default">
+                    <button class="btn btn-light btn-flat btn-medium" style="cursor:default;background:none;outline:none;border:none">
                         <img src="assets/images/trashicon-disabled.svg" width="21" height="21" />
                     </button>
                 }
@@ -187,23 +262,13 @@
                 </RadzenButton>
                 <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(treatment))">
                 </RadzenButton>
-                @if (treatment.Date.Year >= 2020)
-                {
-                    <button class="btn btn-light btn-flat btn-medium" @onclick="@(args => DeleteRow(treatment))" @onclick:stopPropagation="true">
-                        <img src="assets/images/trashicon-enabled.svg" width="21" height="21" />
-                    </button>
-                }
-                else
-                {
-                    <button class="btn btn-light btn-flat btn-medium" style="cursor:default">
-                        <img src="assets/images/trashicon-disabled.svg" width="21" height="21" />
-                    </button>
-                }
             </EditTemplate>
         </RadzenDataGridColumn>
     </CustomColumnsMarkup>
 
 </DataGridRadzen>
+
+
 
 
 @code {
@@ -213,6 +278,8 @@
     private int count;
     private DataGridEditMode radzenEditMode = DataGridEditMode.Single;
     private List<string> entryTypes = new List<string>() { "C", "V" };
+    private DataGridDemoModal visitModal;
+    private TreatmentCardGrid newTreatmentCardEntry = new TreatmentCardGrid();
 
     private async Task LoadTreatmentCardGrid(LoadDataArgs args)
     {
@@ -324,6 +391,15 @@
             args.Attributes.Add("style", "background-color:white");
             args.Attributes.Add("colspan", 13);
         }
+    }
+
+    private async Task OnVisitFormSubmission()
+    {
+        newTreatmentCardEntry.Type = "V";
+        await SaveRow(newTreatmentCardEntry);
+        visitModal.Close();
+        await dataGridParentRef.dataGridRef.Reload();
+        newTreatmentCardEntry = new TreatmentCardGrid();
     }
 
 }
