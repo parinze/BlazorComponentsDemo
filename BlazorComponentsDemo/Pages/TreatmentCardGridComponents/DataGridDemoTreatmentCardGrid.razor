@@ -49,19 +49,21 @@
         @* Chosen column to override for comment entry*@
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Proc" Title="PROC">
             <Template Context="treatment">
+                <span @ondblclick="async () => await EditRow(treatment)">
+                    @treatment.Proc
+                </span>
+            </Template>
+            @* If column entry, bind in-line editing to comment property*@
+            <EditTemplate Context="treatment">
                 @if (treatment.Type == "V")
                 {
-                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                        @treatment.Proc
-                    </span>
+                    <RadzenTextBox @bind-Value="treatment.Proc" Style="width:200px; display: block" Name="Proc" />
                 }
                 else if (treatment.Type == "C")
                 {
-                    <span @ondblclick="() => OpenEditCommentModal(treatment)">
-                        @treatment.Proc
-                    </span>
+                    <RadzenTextBox @bind-Value="treatment.Comment" Style="width:200px; display: block" Name="Comment" />
                 }
-            </Template>
+            </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="DR" Title="DR">
@@ -156,6 +158,12 @@
                     </button>
                 }
             </Template>
+            <EditTemplate Context="treatment">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(treatment))">
+                </RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(treatment))">
+                </RadzenButton>
+            </EditTemplate>
         </RadzenDataGridColumn>
     </CustomColumnsMarkup>
 
@@ -201,9 +209,25 @@
         loadingTreatmentCardGrid = false;
     }
 
+    // for in-line editing (EditTemplate)
+    private async Task EditRow(TreatmentCardGrid treatmentEntry)
+    {
+        await dataGridParentRef.dataGridRef.EditRow(treatmentEntry);
+    }
+
+    // for in-line editing (EditTemplate)
+    private void CancelEdit(TreatmentCardGrid treatmentEntry)
+    {
+        dataGridParentRef.dataGridRef.CancelEditRow(treatmentEntry);
+
+        // in some cases (such as changing the entry type from V to C), CancelEditRow does not cancel as expected
+        // will need to reload datagrid to show that the row has not changed
+        dataGridParentRef.dataGridRef.Reload();
+    }
 
     private async Task SaveRow(TreatmentCardGrid treatmentEntry)
     {
+        await dataGridParentRef.dataGridRef.UpdateRow(treatmentEntry); // for in-line editing
         _dataAccessService.HandleTreatmentCardEntry(treatmentEntry, false);
         await dataGridParentRef.dataGridRef.Reload();
     }
