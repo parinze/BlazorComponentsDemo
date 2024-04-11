@@ -175,7 +175,6 @@
     private bool loadingTreatmentCardGrid { get; set; }
     private int count;
     private DataGridEditMode radzenEditMode = DataGridEditMode.Single;
-    private List<string> entryTypes = new List<string>() { "C", "V" };
     private string trashButtonStyle = "background:none;outline:none;border:none";
 
     // for modals
@@ -268,15 +267,6 @@
         treatmentCardEntryModel.Test = treatmentEntry.Test;
 
         visitModalParentRef.visitModalRef.Open();
-    }
-
-    private void OpenEditCommentModal(TreatmentCardGrid treatmentEntry)
-    {
-        treatmentCardEntryModel.Id = treatmentEntry.Id;
-        treatmentCardEntryModel.Asst = treatmentEntry.Asst;
-        treatmentCardEntryModel.Comment = treatmentEntry.Comment;
-
-        commentModalParentRef.commentModalRef.Open();
     }
 
     private async Task HandleFormSubmission(TreatmentCardGrid treatmentEntry)
