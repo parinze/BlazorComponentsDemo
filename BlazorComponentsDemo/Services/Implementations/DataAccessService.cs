@@ -150,6 +150,7 @@ namespace BlazorComponentsDemo.Services.Implementations
         {
             existingEntry.Asst = treatmentEntry.Asst;
             existingEntry.Proc = treatmentEntry.Proc;
+            existingEntry.Comment = treatmentEntry.Comment;
             existingEntry.DR = treatmentEntry.DR;
             existingEntry.TxNotes = treatmentEntry.TxNotes;
             existingEntry.AWU = treatmentEntry.AWU;

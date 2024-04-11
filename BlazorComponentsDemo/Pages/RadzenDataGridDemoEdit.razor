@@ -6,82 +6,82 @@
 <h3>Radzen DataGrid TreatmentCardGrid</h3>
 
 <DataGridDemoModal @ref="visitModal" Title="Visit Modal">
-    <EditForm Model=@newTreatmentCardEntry>
-            <div class="form-group">
-                <label for="new-treatment-asst">Assistant:</label>
-                <InputText id="new-treatment-asst" @bind-Value="@newTreatmentCardEntry.Asst" />
+    <EditForm Model=@treatmentCardEntryModel>
+        <div class="form-group">
+            <label for="new-treatment-asst">Assistant:</label>
+            <InputText id="new-treatment-asst" class="form-control" @bind-Value="@treatmentCardEntryModel.Asst" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-proc">Procedure:</label>
+            <InputText id="new-treatment-proc" class="form-control" @bind-Value="@treatmentCardEntryModel.Proc" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-dr">DR:</label>
+            <InputText id="new-treatment-dr" class="form-control" @bind-Value="@treatmentCardEntryModel.DR" />
+        </div>
+        <div class="form-group">
+            <label for="txNotes">Tx Notes:</label>
+            <InputText id="new-treatment-txNotes" class="form-control" @bind-Value="@treatmentCardEntryModel.TxNotes" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-awu">AWU:</label>
+            <InputText id="new-treatment-awu" class="form-control" @bind-Value="@treatmentCardEntryModel.AWU" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-bb">BB:</label>
+            <InputText id="new-treatment-bb" class="form-control" @bind-Value="@treatmentCardEntryModel.BB" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-awl">AWL:</label>
+            <InputText id="new-treatment-awl" class="form-control" @bind-Value="@treatmentCardEntryModel.AWL" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-oh">OH:</label>
+            <InputText id="new-treatment-oh" class="form-control" @bind-Value="@treatmentCardEntryModel.OH" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-el">E/L:</label>
+            <InputText id="new-treatment-el" class="form-control" @bind-Value="@treatmentCardEntryModel.EL" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-nvt">NVT:</label>
+            <InputText id="new-treatment-nvt" class="form-control" @bind-Value="@treatmentCardEntryModel.NVT" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-wks">WKS:</label>
+            <InputNumber id="new-treatment-wks" class="form-control" @bind-Value="@treatmentCardEntryModel.WKS" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-chart">Chart:</label>
+            <InputText id="new-treatment-chart" class="form-control" @bind-Value="@treatmentCardEntryModel.Chart" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-test">Test:</label>
+            <InputText id="new-treatment-test" class="form-control" @bind-Value="@treatmentCardEntryModel.Test" />
+        </div>
+        <div class="form-group">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="() => OnVisitFormSubmission()">Save Changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => visitModal.Close()">Cancel</button>
             </div>
-            <div class="form-group">
-                <label for="new-treatment-proc">Procedure:</label>
-                <InputText id="new-treatment-proc" @bind-Value="@newTreatmentCardEntry.Proc" />
-            </div>
-            <div class="form-group">
-                <label for="new-treatment-dr">DR:</label>
-                <InputText id="new-treatment-dr" @bind-Value="@newTreatmentCardEntry.DR" />
-            </div>
-            <div class="form-group">
-                <label for="txNotes">Tx Notes:</label>
-                <InputText id="new-treatment-txNotes" @bind-Value="@newTreatmentCardEntry.TxNotes" />
-            </div>
-            <div class="form-group">
-                <label for="new-treatment-awu">AWU:</label>
-                <InputText id="new-treatment-awu" @bind-Value="@newTreatmentCardEntry.AWU" />
-            </div>
-            <div class="form-group">
-                <label for="new-treatment-bb">BB:</label>
-                <InputText id="new-treatment-bb" @bind-Value="@newTreatmentCardEntry.BB" />
-            </div>
-            <div class="form-group">
-                <label for="new-treatment-awl">AWL:</label>
-                <InputText id="new-treatment-awl" @bind-Value="@newTreatmentCardEntry.AWL" />
-            </div>
-            <div class="form-group">
-                <label for="new-treatment-oh">OH:</label>
-                <InputText id="new-treatment-oh" @bind-Value="@newTreatmentCardEntry.OH" />
-            </div>
-            <div class="form-group">
-                <label for="new-treatment-el">E/L:</label>
-                <InputText id="new-treatment-el" @bind-Value="@newTreatmentCardEntry.EL" />
-            </div>
-            <div class="form-group">
-                <label for="new-treatment-nvt">NVT:</label>
-                <InputText id="new-treatment-nvt" @bind-Value="@newTreatmentCardEntry.NVT" />
-            </div>
-            <div class="form-group">
-                <label for="new-treatment-wks">WKS:</label>
-                <InputNumber id="new-treatment-wks" @bind-Value="@newTreatmentCardEntry.WKS" />
-            </div>
-            <div class="form-group">
-                <label for="new-treatment-chart">Chart:</label>
-                <InputText id="new-treatment-chart" @bind-Value="@newTreatmentCardEntry.Chart" />
-            </div>
-            <div class="form-group">
-                <label for="new-treatment-test">Test:</label>
-                <InputText id="new-treatment-test" @bind-Value="@newTreatmentCardEntry.Test" />
-            </div>
-            <div class="form-group">
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @onclick="() => OnVisitFormSubmission()">Save Changes</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => visitModal.Close()">Close</button>
-                </div>
-            </div>
-        </EditForm>
+        </div>
+    </EditForm>
 </DataGridDemoModal>
 
 <DataGridDemoModal @ref="commentModal" Title="Comment Modal">
-    <EditForm Model=@newTreatmentCardEntry>
+    <EditForm Model=@treatmentCardEntryModel>
             <div class="form-group">
                 <label for="new-treatment-asst">Assistant:</label>
-                <InputText id="new-treatment-asst" @bind-Value="@newTreatmentCardEntry.Asst" />
+            <InputText id="new-treatment-asst" class="form-control" @bind-Value="@treatmentCardEntryModel.Asst" />
             </div>
         <div class="form-group">
             <label for="new-treatment-comment">Comment:</label>
-            <InputTextArea id="new-treatment-comment" @bind-Value="@newTreatmentCardEntry.Comment" />
+            <InputTextArea id="new-treatment-comment" class="form-control" @bind-Value="@treatmentCardEntryModel.Comment" />
         </div>
         <div class="form-group">
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" @onclick="() => OnCommentFormSubmission()">Save Changes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => commentModal.Close()">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => commentModal.Close()">Cancel</button>
             </div>
         </div>
     </EditForm>
@@ -111,35 +111,28 @@
 
     <CustomColumnsMarkup>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Date" Title="Date" FormatString="{0:MM/dd/yyyy}"></RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Type" Title="T" Context="treatment">
-            <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
-                    @treatment.Type
-                </span>
-            </Template>
-
-            @* WILL NEED TO REMOVE ONCE MODAL IS IN PLACE*@
-            @* <EditTemplate Context="treatment">
-                <RadzenDropDown @bind-Value="treatment.Type" Name="Type" Data="@entryTypes" Style="width:200px; display: block;" />
-                <RadzenRequiredValidator Text="Entry type is required" Component="Type" Popup="true" />
-            </EditTemplate> *@
-        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Type" Title="T" Context="treatment"></RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Asst" Title="ASST">
             <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
+                <span @ondblclick="() => OpenEditVisitModal(treatment)">
                     @treatment.Asst
                 </span>
             </Template>
-            <EditTemplate Context="treatment">
-                <RadzenTextBox @bind-Value="treatment.Asst" Style="width:200px; display: block" Name="Asst" />
-                <RadzenRequiredValidator Text="Asst is required" Component="Asst" Popup="true" />
-            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Proc" Title="PROC">
             <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
-                    @treatment.Proc
-                </span>
+                @if (treatment.Type == "V")
+                {
+                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                        @treatment.Proc
+                    </span>
+                }
+                else if (treatment.Type == "C")
+                {
+                    <span @ondblclick="() => OpenEditCommentModal(treatment)">
+                        @treatment.Proc
+                    </span>
+                }         
             </Template>
             <EditTemplate Context="treatment">
                 <RadzenTextBox @bind-Value="treatment.Proc" Style="width:200px; display: block" Name="Proc" />
@@ -147,113 +140,80 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="DR" Title="DR">
             <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
+                <span @ondblclick="() => OpenEditVisitModal(treatment)">
                     @treatment.DR
                 </span>
             </Template>
-            <EditTemplate Context="treatment">
-                <RadzenTextBox @bind-Value="treatment.DR" Style="width:200px; display: block" Name="DR" />
-            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="TxNotes" Title="Tx Notes">
             <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
+                <span @ondblclick="() => OpenEditVisitModal(treatment)">
                     @treatment.TxNotes
                 </span>
             </Template>
-            <EditTemplate Context="treatment">
-                <RadzenTextBox @bind-Value="treatment.TxNotes" Style="width:200px; display: block" Name="TxNotes" />
-            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="AWU" Title="AWU">
             <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
+                <span @ondblclick="() => OpenEditVisitModal(treatment)">
                     @treatment.AWU
                 </span>
             </Template>
-            <EditTemplate Context="treatment">
-                <RadzenTextBox @bind-Value="treatment.AWU" Style="width:200px; display: block" Name="AWU" />
-            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="BB" Title="BB">
             <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
+                <span @ondblclick="() => OpenEditVisitModal(treatment)">
                     @treatment.BB
                 </span>
             </Template>
-            <EditTemplate Context="treatment">
-                <RadzenTextBox @bind-Value="treatment.BB" Style="width:200px; display: block" Name="BB" />
-            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="AWL" Title="AWL">
             <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
+                <span @ondblclick="() => OpenEditVisitModal(treatment)">
                     @treatment.AWL
                 </span>
             </Template>
-            <EditTemplate Context="treatment">
-                <RadzenTextBox @bind-Value="treatment.AWL" Style="width:200px; display: block" Name="AWL" />
-            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="OH" Title="OH">
             <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
+                <span @ondblclick="() => OpenEditVisitModal(treatment)">
                     @treatment.OH
                 </span>
             </Template>
-            <EditTemplate Context="treatment">
-                <RadzenTextBox @bind-Value="treatment.OH" Style="width:200px; display: block" Name="OH" />
-            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="EL" Title="E/L">
             <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
+                <span @ondblclick="() => OpenEditVisitModal(treatment)">
                     @treatment.EL
                 </span>
             </Template>
-            <EditTemplate Context="treatment">
-                <RadzenTextBox @bind-Value="treatment.EL" Style="width:200px; display: block" Name="EL" />
-            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="NVT" Title="NVT">
             <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
+                <span @ondblclick="() => OpenEditVisitModal(treatment)">
                     @treatment.NVT
                 </span>
             </Template>
-            <EditTemplate Context="treatment">
-                <RadzenTextBox @bind-Value="treatment.NVT" Style="width:200px; display: block" Name="NVT" />
-            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="WKS" Title="WKS">
             <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
+                <span @ondblclick="() => OpenEditVisitModal(treatment)">
                     @treatment.WKS
                 </span>
             </Template>
-            <EditTemplate Context="treatment">
-                <RadzenNumeric @bind-Value="treatment.WKS" Style="width:200px; display: block" Name="WKS" />
-            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Chart" Title="Chart">
             <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
+                <span @ondblclick="() => OpenEditVisitModal(treatment)">
                     @treatment.Chart
                 </span>
             </Template>
-            <EditTemplate Context="treatment">
-                <RadzenTextBox @bind-Value="treatment.Chart" Style="width:200px; display: block" Name="Chart" />
-            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Test" Title="Test">
             <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
+                <span @ondblclick="() => OpenEditVisitModal(treatment)">
                     @treatment.Test
                 </span>
             </Template>
-            <EditTemplate Context="treatment">
-                <RadzenTextBox @bind-Value="treatment.Test" Style="width:200px; display: block" Name="Test" />
-            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Context="treatment" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true">
             <Template Context="treatment">
@@ -270,12 +230,6 @@
                     </button>
                 }
             </Template>
-            <EditTemplate Context="treatment">
-                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(treatment))">
-                </RadzenButton>
-                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(treatment))">
-                </RadzenButton>
-            </EditTemplate>
         </RadzenDataGridColumn>
     </CustomColumnsMarkup>
 
@@ -294,7 +248,7 @@
 
     private DataGridDemoModal visitModal;
     private DataGridDemoModal commentModal;
-    private TreatmentCardGrid newTreatmentCardEntry = new TreatmentCardGrid();
+    private TreatmentCardGrid treatmentCardEntryModel = new TreatmentCardGrid();
 
     private async Task LoadTreatmentCardGrid(LoadDataArgs args)
     {
@@ -411,22 +365,51 @@
         }
     }
 
+    private void OpenEditVisitModal(TreatmentCardGrid treatmentEntry)
+    {
+        treatmentCardEntryModel.Id = treatmentEntry.Id;
+        treatmentCardEntryModel.Asst = treatmentEntry.Asst;
+        treatmentCardEntryModel.Proc = treatmentEntry.Proc;
+        treatmentCardEntryModel.DR = treatmentEntry.DR;
+        treatmentCardEntryModel.TxNotes = treatmentEntry.TxNotes;
+        treatmentCardEntryModel.AWU = treatmentEntry.AWU;
+        treatmentCardEntryModel.BB = treatmentEntry.BB;
+        treatmentCardEntryModel.AWL = treatmentEntry.AWL;
+        treatmentCardEntryModel.OH = treatmentEntry.OH;
+        treatmentCardEntryModel.EL = treatmentEntry.EL;
+        treatmentCardEntryModel.NVT = treatmentEntry.NVT;
+        treatmentCardEntryModel.WKS = treatmentEntry.WKS;
+        treatmentCardEntryModel.Chart = treatmentEntry.Chart;
+        treatmentCardEntryModel.Test = treatmentEntry.Test;
+
+        visitModal.Open();
+    }
+
+    private void OpenEditCommentModal(TreatmentCardGrid treatmentEntry)
+    {
+        treatmentCardEntryModel.Id = treatmentEntry.Id;
+        treatmentCardEntryModel.Asst = treatmentEntry.Asst;
+        treatmentCardEntryModel.Comment = treatmentEntry.Comment;
+
+        commentModal.Open();
+    }
+
     private async Task OnVisitFormSubmission()
     {
-        newTreatmentCardEntry.Type = "V";
-        await SaveRow(newTreatmentCardEntry);
+        treatmentCardEntryModel.Type = "V";
+        await SaveRow(treatmentCardEntryModel);
         visitModal.Close();
         await dataGridParentRef.dataGridRef.Reload();
-        newTreatmentCardEntry = new TreatmentCardGrid();
+        treatmentCardEntryModel = new TreatmentCardGrid();
     }
 
     private async Task OnCommentFormSubmission()
     {
-        newTreatmentCardEntry.Type = "C";
-        await SaveRow(newTreatmentCardEntry);
+        treatmentCardEntryModel.Type = "C";
+        await SaveRow(treatmentCardEntryModel);
         commentModal.Close();
         await dataGridParentRef.dataGridRef.Reload();
-        newTreatmentCardEntry = new TreatmentCardGrid();
+        treatmentCardEntryModel = new TreatmentCardGrid();
     }
 
 }
