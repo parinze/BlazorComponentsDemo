@@ -1,0 +1,34 @@
+﻿<ModalDemo @ref="commentModalRef" Title="Comment Modal">
+    <EditForm Model=@TreatmentCardEntryModel>
+        <div class="form-group">
+            <label for="new-treatment-asst">Assistant:</label>
+            <InputText id="new-treatment-asst" class="form-control" @bind-Value="@TreatmentCardEntryModel.Asst" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-comment">Comment:</label>
+            <InputTextArea id="new-treatment-comment" class="form-control" @bind-Value="@TreatmentCardEntryModel.Comment" />
+        </div>
+        <div class="form-group">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="() => SubmitCommentForm()">Save Changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => commentModalRef.Close()">Cancel</button>
+            </div>
+        </div>
+    </EditForm>
+</ModalDemo>
+
+@code {
+    public ModalDemo commentModalRef;
+
+    [Parameter] public TreatmentCardGrid TreatmentCardEntryModel { get; set; } = new TreatmentCardGrid();
+    [Parameter] public DataGridRadzen<TreatmentCardGrid> DataGridParentRef { get; set; } = default!;
+    [Parameter] public EventCallback<TreatmentCardGrid> OnCommentFormSubmission { get; set; }
+
+    private async Task SubmitCommentForm()
+    {
+        TreatmentCardEntryModel.Type = "C";
+        commentModalRef.Close();
+        await OnCommentFormSubmission.InvokeAsync(TreatmentCardEntryModel);
+        await DataGridParentRef.dataGridRef.Reload();
+    }
+}

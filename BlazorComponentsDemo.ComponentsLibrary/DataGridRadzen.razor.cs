@@ -32,6 +32,12 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 		/// </summary>
 		[Parameter][EditorRequired] public Func<LoadDataArgs, Task> LoadData { get; set; } = default!;
 
+		/// <summary>
+		/// A boolean value to indicate if the data grid is sortable.
+		/// <para>Default: true</para>
+		/// </summary>
+		[Parameter] public bool AllowSorting { get; set; } = true;
+
         /// <summary>
         /// A boolean value to indicate if the data grid is loading.
         /// </summary>

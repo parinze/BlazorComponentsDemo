@@ -2,6 +2,15 @@
     background-color: white !important;
 }
 
+th.rz-unselectable-text.rz-text-align-left {
+    background-color: white !important;
+}
+
+
+th.rz-unselectable-text.rz-frozen-cell.rz-text-align-center {
+    background-color: white !important;
+}
+
 .rz-datatable-thead th .rz-column-title, .rz-grid-table thead th .rz-column-title {
     color: #007ac3 !important;
 }

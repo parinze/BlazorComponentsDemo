@@ -1,0 +1,78 @@
+﻿<ModalDemo @ref="visitModalRef" Title="Visit Modal">
+    <EditForm Model=@TreatmentCardEntryModel>
+        <div class="form-group">
+            <label for="new-treatment-asst">Assistant:</label>
+            <InputText id="new-treatment-asst" class="form-control" @bind-Value="@TreatmentCardEntryModel.Asst" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-proc">Procedure:</label>
+            <InputText id="new-treatment-proc" class="form-control" @bind-Value="@TreatmentCardEntryModel.Proc" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-dr">DR:</label>
+            <InputText id="new-treatment-dr" class="form-control" @bind-Value="@TreatmentCardEntryModel.DR" />
+        </div>
+        <div class="form-group">
+            <label for="txNotes">Tx Notes:</label>
+            <InputText id="new-treatment-txNotes" class="form-control" @bind-Value="@TreatmentCardEntryModel.TxNotes" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-awu">AWU:</label>
+            <InputText id="new-treatment-awu" class="form-control" @bind-Value="@TreatmentCardEntryModel.AWU" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-bb">BB:</label>
+            <InputText id="new-treatment-bb" class="form-control" @bind-Value="@TreatmentCardEntryModel.BB" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-awl">AWL:</label>
+            <InputText id="new-treatment-awl" class="form-control" @bind-Value="@TreatmentCardEntryModel.AWL" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-oh">OH:</label>
+            <InputText id="new-treatment-oh" class="form-control" @bind-Value="@TreatmentCardEntryModel.OH" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-el">E/L:</label>
+            <InputText id="new-treatment-el" class="form-control" @bind-Value="@TreatmentCardEntryModel.EL" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-nvt">NVT:</label>
+            <InputText id="new-treatment-nvt" class="form-control" @bind-Value="@TreatmentCardEntryModel.NVT" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-wks">WKS:</label>
+            <InputNumber id="new-treatment-wks" class="form-control" @bind-Value="@TreatmentCardEntryModel.WKS" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-chart">Chart:</label>
+            <InputText id="new-treatment-chart" class="form-control" @bind-Value="@TreatmentCardEntryModel.Chart" />
+        </div>
+        <div class="form-group">
+            <label for="new-treatment-test">Test:</label>
+            <InputText id="new-treatment-test" class="form-control" @bind-Value="@TreatmentCardEntryModel.Test" />
+        </div>
+        <div class="form-group">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="() => SubmitVisitForm()">Save Changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => visitModalRef.Close()">Cancel</button>
+            </div>
+        </div>
+    </EditForm>
+</ModalDemo>
+
+@code {
+    public ModalDemo visitModalRef;
+
+    [Parameter] public TreatmentCardGrid TreatmentCardEntryModel { get; set; } = new TreatmentCardGrid();
+    [Parameter] public DataGridRadzen<TreatmentCardGrid> DataGridParentRef { get; set; } = default!;
+    [Parameter] public EventCallback<TreatmentCardGrid> OnVisitFormSubmission { get; set; }
+
+    private async Task SubmitVisitForm()
+    {
+        TreatmentCardEntryModel.Type = "V";
+        visitModalRef.Close();
+        await OnVisitFormSubmission.InvokeAsync(TreatmentCardEntryModel);
+        await DataGridParentRef.dataGridRef.Reload();
+    }
+}

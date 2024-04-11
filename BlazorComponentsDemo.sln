@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponentsDemo.DataMo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponentsDemo.Server", "BlazorComponentsDemo.Server\BlazorComponentsDemo.Server.csproj", "{4A06EF3A-944E-47B1-9ABD-92B0F75A5C51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorComponentsDemo.Tests", "BlazorComponentsDemo.Tests\BlazorComponentsDemo.Tests.csproj", "{A810CE38-B421-4FD9-928C-D54817B2F6B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponentsDemo.Tests", "BlazorComponentsDemo.Tests\BlazorComponentsDemo.Tests.csproj", "{A810CE38-B421-4FD9-928C-D54817B2F6B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
