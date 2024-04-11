@@ -68,12 +68,26 @@
         </EditForm>
 </DataGridDemoModal>
 
-<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.End" Gap="10px" class="mt-2 mb-4">
-    <RadzenButton Image="assets/images/addnewrowbutton.svg"
-                    Click="@InsertRow"
-                    Disabled="@(radzenEditMode == DataGridEditMode.Single && recordsToInsert.Count() > 0)"
-                    Style="float:right;background-color:white" />
+<DataGridDemoModal @ref="commentModal" Title="Comment Modal">
+    <EditForm Model=@newTreatmentCardEntry>
+            <div class="form-group">
+                <label for="new-treatment-asst">Assistant:</label>
+                <InputText id="new-treatment-asst" @bind-Value="@newTreatmentCardEntry.Asst" />
+            </div>
+        <div class="form-group">
+            <label for="new-treatment-comment">Comment:</label>
+            <InputTextArea id="new-treatment-comment" @bind-Value="@newTreatmentCardEntry.Comment" />
+        </div>
+        <div class="form-group">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="() => OnCommentFormSubmission()">Save Changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => commentModal.Close()">Close</button>
+            </div>
+        </div>
+    </EditForm>
+</DataGridDemoModal>
 
+<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.End" Gap="10px" class="mt-2 mb-4">
     <div class="dropdown">
         <a href="#" role="button" data-toggle="dropdown" aria-expanded="false" style="padding:0.5rem 1rem" @onclick:preventDefault="true">
             <img src="assets/images/addnewrowbutton.svg" width="20" height="20" />
@@ -81,8 +95,7 @@
 
         <ul class="dropdown-menu dropdown-menu-right">
             <li><a class="dropdown-item" href="#" @onclick="() => visitModal.Open()" @onclick:preventDefault="true">Add A Visit</a></li>
-            @* <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>*@
+            <li><a class="dropdown-item" href="#" @onclick="() => commentModal.Open()" @onclick:preventDefault="true">Add A Comment</a></li>
         </ul>
     </div>
 </RadzenStack>
@@ -106,10 +119,10 @@
             </Template>
 
             @* WILL NEED TO REMOVE ONCE MODAL IS IN PLACE*@
-            <EditTemplate Context="treatment">
+            @* <EditTemplate Context="treatment">
                 <RadzenDropDown @bind-Value="treatment.Type" Name="Type" Data="@entryTypes" Style="width:200px; display: block;" />
                 <RadzenRequiredValidator Text="Entry type is required" Component="Type" Popup="true" />
-            </EditTemplate>
+            </EditTemplate> *@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Asst" Title="ASST">
             <Template Context="treatment">
@@ -278,7 +291,9 @@
     private int count;
     private DataGridEditMode radzenEditMode = DataGridEditMode.Single;
     private List<string> entryTypes = new List<string>() { "C", "V" };
+
     private DataGridDemoModal visitModal;
+    private DataGridDemoModal commentModal;
     private TreatmentCardGrid newTreatmentCardEntry = new TreatmentCardGrid();
 
     private async Task LoadTreatmentCardGrid(LoadDataArgs args)
@@ -401,6 +416,15 @@
         newTreatmentCardEntry.Type = "V";
         await SaveRow(newTreatmentCardEntry);
         visitModal.Close();
+        await dataGridParentRef.dataGridRef.Reload();
+        newTreatmentCardEntry = new TreatmentCardGrid();
+    }
+
+    private async Task OnCommentFormSubmission()
+    {
+        newTreatmentCardEntry.Type = "C";
+        await SaveRow(newTreatmentCardEntry);
+        commentModal.Close();
         await dataGridParentRef.dataGridRef.Reload();
         newTreatmentCardEntry = new TreatmentCardGrid();
     }
