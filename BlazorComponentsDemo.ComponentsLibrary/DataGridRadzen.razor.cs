@@ -10,12 +10,8 @@ namespace BlazorComponentsDemo.ComponentsLibrary
         #region Variable Declaration
         public RadzenDataGrid<TType> dataGridRef;
 		public RadzenContextMenu contextMenuRef;
-		protected IEnumerable<int> PageSizeOptions { get; set; } = new int[] { 10, 20, 50, 100, 500 };
-		protected int pageSize = 10;
-		protected string pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
+		protected int currentPageSize = 10;
 		protected bool isReloading = false;
-
-        protected List<TType> rowsToInsert = new List<TType>();
 
         /// <summary>
         /// An array of <typeparamref name="TType"/> objects.
@@ -39,6 +35,43 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 		[Parameter] public bool AllowSorting { get; set; } = true;
 
         /// <summary>
+        /// A boolean value to indicate if the data grid is pagable.
+        /// <para>Default: true</para>
+        /// </summary>
+        [Parameter] public bool AllowPaging { get; set; } = true;
+
+        /// <summary>
+        /// A boolean value to indicate if the data grid columns are resizable.
+        /// <para>Default: true</para>
+        /// </summary>
+        [Parameter] public bool AllowColumnResize { get; set; } = true;
+
+        /// <summary>
+        /// A boolean value to indicate if the data grid rows will alternate between white and gray background colors.
+        /// <para>Default: true</para>
+        /// </summary>
+        [Parameter] public bool AllowAlternatingRows { get; set; } = true;
+
+		/// <summary>
+		/// An enumerable collection of integers to specify the page size options.
+		/// <para>Default: {10, 20, 50, 100, 500}</para>
+		/// </summary>
+		[Parameter] public IEnumerable<int> PageSizeOptions { get; set; } = new int[] { 10, 20, 50, 100, 500 };
+
+		/// <summary>
+		/// A boolean value to indicate if the data grid should show the paging summary.
+		/// <para>Default: true</para>
+		/// </summary>
+		[Parameter] public bool ShowPagingSummary { get; set; } = true;
+
+		/// <summary>
+		/// A string value to specify the format of the paging summary.
+		/// <para>Default: "Displaying page {0} of {1} &lt; b &gt; (total {2} records) &lt; /b &gt;"</para>
+		/// <para>Parameters: {0} = current page, {1} = total pages, {2} = total records</para>
+		/// </summary>
+        [Parameter] public string PagingSummaryFormat { get; set; } = "Displaying page {0} of {1} <b>(total {2} records)</b>";
+
+        /// <summary>
         /// A boolean value to indicate if the data grid is loading.
         /// </summary>
         [Parameter][EditorRequired] public bool IsLoading { get; set; }
@@ -58,10 +91,11 @@ namespace BlazorComponentsDemo.ComponentsLibrary
         /// </summary>
         [Parameter] public RenderFragment? CustomColumnsMarkup { get; set; }
 
-		/// <summary>
-		/// A RadzenDataGridEditMode enum value to specify the edit mode of the data grid.
-		/// </summary>
-        [Parameter] public DataGridEditMode RadzenEditMode { get; set; }
+        /// <summary>
+        /// A RadzenDataGridEditMode enum value to specify the edit mode of the data grid.
+        /// <para>Default: DataGridEditMode.Single (edit one row at a time)</para>
+        /// </summary>
+        [Parameter] public DataGridEditMode RadzenEditMode { get; set; } = DataGridEditMode.Single;
 
         /// <summary>
         /// A string value to specify the date format to be used in the data grid.
@@ -69,12 +103,34 @@ namespace BlazorComponentsDemo.ComponentsLibrary
         /// </summary>
         [Parameter] public string DateFormat { get; set; } = "{0:MM/dd/yyyy HH:mm}";
 
+        /// <summary>
+        /// A string to specify the starting column width for each column of the data grid.
+        /// </summary>
+        [Parameter] public string StartingColumnWidth { get; set; } = "";
+
 		/// <summary>
-		/// Dictionary mapping of the property names of <typeparamref name="TType"/> class to desired column header names.
-		/// <para>Note: It is not required to include all of the property names in the dictionary.</para>
-		/// <para>E.g. Property: PurchaseDate > {"PurchaseDate", "Purchase Date"}</para>
+		/// A string to specify the maximum height of the data grid.
+		/// <para>Default: "100%"</para>
 		/// </summary>
-		[Parameter] public Dictionary<string, string> PropertyToHeaderName { get; set; } = new();
+		[Parameter] public string MaxDataGridHeight { get; set; } = "100%";
+
+		/// <summary>
+		/// A string to specify the maximum width of the data grid.
+		/// <para>Default: "100%"</para>
+		/// </summary>
+		[Parameter] public string MaxDataGridWidth { get; set; } = "100%";
+
+        /// <summary>
+        /// A string to specify the additional styles for the data grid.
+        /// </summary>
+        [Parameter] public string AdditionalDataGridStyles { get; set; } = "";
+
+        /// <summary>
+        /// Dictionary mapping of the property names of <typeparamref name="TType"/> class to desired column header names.
+        /// <para>Note: It is not required to include all of the property names in the dictionary.</para>
+        /// <para>E.g. Property: PurchaseDate > {"PurchaseDate", "Purchase Date"}</para>
+        /// </summary>
+        [Parameter] public Dictionary<string, string> PropertyToHeaderName { get; set; } = new();
 
 		/// <summary>
 		/// A list of <see cref="Status"/> objects to be used to specify styles based on the specified status label.

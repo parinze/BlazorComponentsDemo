@@ -16,7 +16,7 @@
 @code {
     private List<TestData>? testData;
     private PeopleTestData? firstTestDataRecord;
-    private bool loadingTestData { get; set; }
+    private bool loadingTestData = false;
     private int count;
 
     Dictionary<string, string> propertyToHeaderNames = new()

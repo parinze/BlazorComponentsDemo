@@ -1,4 +1,5 @@
 ﻿@using System.Linq.Dynamic.Core
+@inherits DataGridDemoTreatmentCardGridModel
 @inject IDataAccessService _dataAccessService
 
 @* Example modals*@
@@ -12,266 +13,179 @@
                        DataGridParentRef="@dataGridParentRef"
                        OnCommentFormSubmission="HandleFormSubmission" />
 
-<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.End" Gap="10px" class="mt-2 mb-4">
-    <div class="dropdown">
-        <a href="#" role="button" data-toggle="dropdown" aria-expanded="false" style="padding:0.5rem 1rem" @onclick:preventDefault="true">
-            <img src="assets/images/addnewrowbutton.svg" width="20" height="20" />
-        </a>
+<div style="display:flex;justify-content:space-evenly">
+    <div style="width:95rem">
+    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.End" Gap="10px" class="mt-2 mb-4">
+        <div class="dropdown">
+            <a href="#" role="button" data-toggle="dropdown" aria-expanded="false" style="padding:0.5rem 1rem" @onclick:preventDefault="true">
+                <img src="assets/images/addnewrowbutton.svg" width="20" height="20" />
+            </a>
 
-        <ul class="dropdown-menu dropdown-menu-right">
-            <li><a class="dropdown-item" href="#" @onclick="() => visitModalParentRef.visitModalRef.Open()" @onclick:preventDefault="true">Add A Visit</a></li>
-            <li><a class="dropdown-item" href="#" @onclick="() => commentModalParentRef.commentModalRef.Open()" @onclick:preventDefault="true">Add A Comment</a></li>
-        </ul>
-    </div>
-</RadzenStack>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li><a class="dropdown-item" href="#" @onclick="() => visitModalParentRef.visitModalRef.Open()" @onclick:preventDefault="true">Add A Visit</a></li>
+                <li><a class="dropdown-item" href="#" @onclick="() => commentModalParentRef.commentModalRef.Open()" @onclick:preventDefault="true">Add A Comment</a></li>
+            </ul>
+        </div>
+    </RadzenStack>
 
-<DataGridRadzen @ref="@dataGridParentRef"
-                Data=@treatmentCardGridEntriesData
-                TType="TreatmentCardGrid"
-                AllowSorting=false
-                IsLoading="@loadingTreatmentCardGrid"
-                LoadData="@LoadTreatmentCardGridEntries"
-                QueryCount="@count"
-                RadzenEditMode="@radzenEditMode"
-                CellRender="@CellRender">
+    <DataGridRadzen @ref="@dataGridParentRef"
+                    Data=@treatmentCardGridEntriesData
+                    TType="TreatmentCardGrid"
+                    AllowSorting=false
+                    AllowPaging=false
+                    IsLoading="@loadingTreatmentCardGrid"
+                    LoadData="@LoadTreatmentCardGridEntries"
+                    QueryCount="@count"
+                    CellRender="@CellRender"
+                    StartingColumnWidth="200px"
+                    MaxDataGridHeight="500px">
 
-    <CustomColumnsMarkup>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Date" Title="Date" FormatString="{0:MM/dd/yyyy}"></RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Type" Title="T" Context="treatment"></RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Asst" Title="ASST">
-            <Template Context="treatment">
-                <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                    @treatment.Asst
-                </span>
-            </Template>
-        </RadzenDataGridColumn>
+        <CustomColumnsMarkup>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Date" Title="Date" FormatString="{0:MM/dd/yyyy}"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Type" Title="T" Width="70px"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Asst" Title="ASST">
+                <Template Context="treatment">
+                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                        @treatment.Asst
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
 
-        @* Chosen column to override for comment entry*@
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Proc" Title="PROC">
-            <Template Context="treatment">
-                <span @ondblclick="async () => await EditRow(treatment)">
-                    @treatment.Proc
-                </span>
-            </Template>
-            @* If column entry, bind in-line editing to comment property*@
-            <EditTemplate Context="treatment">
-                @if (treatment.Type == "V")
-                {
-                    <RadzenTextBox @bind-Value="treatment.Proc" Style="width:200px; display: block" Name="Proc" />
-                }
-                else if (treatment.Type == "C")
-                {
-                    <RadzenTextBox @bind-Value="treatment.Comment" Style="width:200px; display: block" Name="Comment" />
-                }
-            </EditTemplate>
-        </RadzenDataGridColumn>
+            @* Chosen column to override for comment entry*@
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Proc" Title="PROC">
+                <Template Context="treatment">
+                    @if (treatment.Type == "V")
+                    {
+                        <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                            @treatment.Proc
+                        </span>
+                    }
+                    else if (treatment.Type == "C")
+                    {
+                        <span @ondblclick="async () => await EditRow(treatment)" style="white-space:normal">
+                            @treatment.Comment
+                        </span>
+                    }
+                </Template>
+                @* If column entry, bind in-line editing to comment property*@
+                <EditTemplate Context="treatment">
+                    @if (treatment.Type == "V")
+                    {
+                        <RadzenTextBox @bind-Value="treatment.Proc" Style="width:200px; display: block" Name="Proc" />
+                    }
+                    else if (treatment.Type == "C")
+                    {
+                        <RadzenTextArea @ref="radzenTextAreaRef" 
+                                              Rows="1" 
+                                              @oninput="@(() => AutoResizeTextAreaHeight(radzenTextAreaRef.Element))" 
+                                              @bind-Value="treatment.Comment" 
+                                              Style="width:20rem; display: block;" 
+                                              Name="Comment" />
+                    }
+                </EditTemplate>
+            </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="DR" Title="DR">
-            <Template Context="treatment">
-                <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                    @treatment.DR
-                </span>
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="TxNotes" Title="Tx Notes">
-            <Template Context="treatment">
-                <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                    @treatment.TxNotes
-                </span>
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="AWU" Title="AWU">
-            <Template Context="treatment">
-                <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                    @treatment.AWU
-                </span>
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="BB" Title="BB">
-            <Template Context="treatment">
-                <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                    @treatment.BB
-                </span>
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="AWL" Title="AWL">
-            <Template Context="treatment">
-                <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                    @treatment.AWL
-                </span>
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="OH" Title="OH">
-            <Template Context="treatment">
-                <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                    @treatment.OH
-                </span>
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="EL" Title="E/L">
-            <Template Context="treatment">
-                <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                    @treatment.EL
-                </span>
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="NVT" Title="NVT">
-            <Template Context="treatment">
-                <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                    @treatment.NVT
-                </span>
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="WKS" Title="WKS">
-            <Template Context="treatment">
-                <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                    @treatment.WKS
-                </span>
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Chart" Title="Chart">
-            <Template Context="treatment">
-                <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                    @treatment.Chart
-                </span>
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Test" Title="Test">
-            <Template Context="treatment">
-                <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                    @treatment.Test
-                </span>
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TreatmentCardGrid" Context="treatment" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true">
-            <Template Context="treatment">
-                @if (treatment.Date.Year >= 2020)
-                {
-                    <button class="btn btn-light btn-flat btn-medium" style="cursor:pointer;@trashButtonStyle" @onclick="@(args => DeleteRow(treatment))" @onclick:stopPropagation="true">
-                        <img src="assets/images/trashicon-enabled.svg" width="21" height="21" />
-                    </button>
-                }
-                else
-                {
-                    <button class="btn btn-light btn-flat btn-medium" style="cursor:default;@trashButtonStyle">
-                        <img src="assets/images/trashicon-disabled.svg" width="21" height="21" />
-                    </button>
-                }
-            </Template>
-            <EditTemplate Context="treatment">
-                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(treatment))">
-                </RadzenButton>
-                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(treatment))">
-                </RadzenButton>
-            </EditTemplate>
-        </RadzenDataGridColumn>
-    </CustomColumnsMarkup>
-
-</DataGridRadzen>
-
-@code {
-    private DataGridRadzen<TreatmentCardGrid> dataGridParentRef;
-    private List<TreatmentCardGrid>? treatmentCardGridEntriesData;
-    private bool loadingTreatmentCardGrid { get; set; }
-    private int count;
-    private DataGridEditMode radzenEditMode = DataGridEditMode.Single;
-    private string trashButtonStyle = "background:none;outline:none;border:none";
-
-    // for modals
-    private ModalDemoVisitEntry visitModalParentRef;
-    private ModalDemoCommentEntry commentModalParentRef;
-    private TreatmentCardGrid treatmentCardEntryModel = new TreatmentCardGrid();
-
-    private async Task LoadTreatmentCardGridEntries(LoadDataArgs args)
-    {
-        loadingTreatmentCardGrid = true;
-
-        var data = await _dataAccessService.GetTreatmentCardEntries();
-
-        var query = data?.AsQueryable();
-
-        // Enable sorting with Dynamic LINQ (System.Linq.Dynamic.Core)
-        if (!string.IsNullOrEmpty(args.OrderBy))
-        {
-            // Sort via the OrderBy method
-            query = query?.OrderBy(args.OrderBy);
-        }
-
-        count = query?.Count() ?? 0;
-
-        await Task.Delay(2000); // for demo loading purposes
-
-        data = await Task.FromResult(query?.Skip(args.Skip.Value).Take(args.Top.Value).ToList());
-
-        treatmentCardGridEntriesData = data;
-
-        loadingTreatmentCardGrid = false;
-    }
-
-    // for in-line editing (EditTemplate)
-    private async Task EditRow(TreatmentCardGrid treatmentEntry)
-    {
-        await dataGridParentRef.dataGridRef.EditRow(treatmentEntry);
-    }
-
-    // for in-line editing (EditTemplate)
-    private void CancelEdit(TreatmentCardGrid treatmentEntry)
-    {
-        dataGridParentRef.dataGridRef.CancelEditRow(treatmentEntry);
-
-        // in some cases (such as changing the entry type from V to C), CancelEditRow does not cancel as expected
-        // will need to reload datagrid to show that the row has not changed
-        dataGridParentRef.dataGridRef.Reload();
-    }
-
-    private async Task SaveRow(TreatmentCardGrid treatmentEntry)
-    {
-        await dataGridParentRef.dataGridRef.UpdateRow(treatmentEntry); // for in-line editing
-        _dataAccessService.HandleTreatmentCardEntry(treatmentEntry, false);
-        await dataGridParentRef.dataGridRef.Reload();
-    }
-
-    private async Task DeleteRow(TreatmentCardGrid treatmentEntry)
-    {
-        _dataAccessService.HandleTreatmentCardEntry(treatmentEntry, true);
-        await dataGridParentRef.dataGridRef.Reload();
-    }
-
-    private void CellRender(DataGridCellRenderEventArgs<TreatmentCardGrid> args)
-    {
-        // override Proc column value for comment row to start on this column
-        if (args.Data.Type == "C" && args.Column.Property == "Proc")
-        {
-            args.Data.Proc = args.Data.Comment;
-
-            // span comment row to the remaining width of datagrid
-            args.Attributes.Add("colspan", 12);
-        }
-    }
-
-    private void OpenEditVisitModal(TreatmentCardGrid treatmentEntry)
-    {
-        treatmentCardEntryModel.Id = treatmentEntry.Id;
-        treatmentCardEntryModel.Asst = treatmentEntry.Asst;
-        treatmentCardEntryModel.Proc = treatmentEntry.Proc;
-        treatmentCardEntryModel.DR = treatmentEntry.DR;
-        treatmentCardEntryModel.TxNotes = treatmentEntry.TxNotes;
-        treatmentCardEntryModel.AWU = treatmentEntry.AWU;
-        treatmentCardEntryModel.BB = treatmentEntry.BB;
-        treatmentCardEntryModel.AWL = treatmentEntry.AWL;
-        treatmentCardEntryModel.OH = treatmentEntry.OH;
-        treatmentCardEntryModel.EL = treatmentEntry.EL;
-        treatmentCardEntryModel.NVT = treatmentEntry.NVT;
-        treatmentCardEntryModel.WKS = treatmentEntry.WKS;
-        treatmentCardEntryModel.Chart = treatmentEntry.Chart;
-        treatmentCardEntryModel.Test = treatmentEntry.Test;
-
-        visitModalParentRef.visitModalRef.Open();
-    }
-
-    private async Task HandleFormSubmission(TreatmentCardGrid treatmentEntry)
-    {
-        await SaveRow(treatmentEntry);
-        treatmentCardEntryModel = new TreatmentCardGrid();
-    }
-}
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="DR" Title="DR">
+                <Template Context="treatment">
+                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                        @treatment.DR
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="TxNotes" Title="Tx Notes">
+                <Template Context="treatment">
+                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                        @treatment.TxNotes
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="AWU" Title="AWU">
+                <Template Context="treatment">
+                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                        @treatment.AWU
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="BB" Title="BB">
+                <Template Context="treatment">
+                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                        @treatment.BB
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="AWL" Title="AWL">
+                <Template Context="treatment">
+                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                        @treatment.AWL
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="OH" Title="OH">
+                <Template Context="treatment">
+                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                        @treatment.OH
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="EL" Title="E/L">
+                <Template Context="treatment">
+                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                        @treatment.EL
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="NVT" Title="NVT">
+                <Template Context="treatment">
+                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                        @treatment.NVT
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="WKS" Title="WKS">
+                <Template Context="treatment">
+                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                        @treatment.WKS
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Chart" Title="Chart">
+                <Template Context="treatment">
+                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                        @treatment.Chart
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Test" Title="Test">
+                <Template Context="treatment">
+                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                        @treatment.Test
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TreatmentCardGrid" Context="treatment" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right" Width="100px">
+                <Template Context="treatment">
+                    @* Example conditional for enabling/disabling deletion *@
+                    @if (treatment.Date.Year >= 2020)
+                    {
+                        <button class="btn btn-light btn-flat btn-medium" style="cursor:pointer;@deleteButtonStyle" @onclick="@(args => DeleteRow(treatment))" @onclick:stopPropagation="true">
+                            <img src="assets/images/trashicon-enabled.svg" width="21" height="21" />
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-light btn-flat btn-medium" style="cursor:default;@deleteButtonStyle">
+                            <img src="assets/images/trashicon-disabled.svg" width="21" height="21" />
+                        </button>
+                    }
+                </Template>
+                <EditTemplate Context="treatment">
+                    <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(treatment))">
+                    </RadzenButton>
+                    <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(treatment))">
+                    </RadzenButton>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+        </CustomColumnsMarkup>
+    </DataGridRadzen>
+</div>
+</div>

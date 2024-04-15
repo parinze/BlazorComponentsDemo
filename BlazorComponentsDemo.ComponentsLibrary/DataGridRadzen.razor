@@ -1,24 +1,25 @@
 ﻿@typeparam TType
 @inherits DataGridRadzenModel<TType>
 
-<RadzenDataGrid 
-	@ref="dataGridRef"
-	AllowColumnResize="true"
-	AllowSorting="@AllowSorting"
-	AllowPaging="true"
-	PageSizeOptions="@PageSizeOptions"
-	ShowPagingSummary="true"
-	PagingSummaryFormat="@pagingSummaryFormat"
-	AllowAlternatingRows="true"
-	PageSizeChanged="@(args => pageSize = args)"
-	Data="@Data"
-	LoadData="@LoadData"
-	IsLoading="@IsLoading" 
-	TItem="@TType"
-	GridLines="Radzen.DataGridGridLines.Both"
-	Count="@QueryCount"
-    EditMode="@RadzenEditMode"
-    CellRender="@CellRender">
+<RadzenDataGrid @ref="dataGridRef"
+                AllowColumnResize="@AllowColumnResize"
+	            AllowSorting="@AllowSorting"
+	            AllowPaging="@AllowPaging"
+	            PageSizeOptions="@PageSizeOptions"
+	            ShowPagingSummary="@ShowPagingSummary"
+	            PagingSummaryFormat="@PagingSummaryFormat"
+	            AllowAlternatingRows="@AllowAlternatingRows"
+                PageSizeChanged="@(args => currentPageSize = args)"
+	            Data="@Data"
+	            LoadData="@LoadData"
+	            IsLoading="@IsLoading" 
+	            TItem="@TType"
+	            GridLines="Radzen.DataGridGridLines.Both"
+	            Count="@QueryCount"
+                EditMode="@RadzenEditMode"
+                CellRender="@CellRender"
+                ColumnWidth="@StartingColumnWidth"
+                Style=@($"max-height:{MaxDataGridHeight}; width:{MaxDataGridWidth}; {AdditionalDataGridStyles}")>
     <Columns>
         @if (CustomColumnsMarkup != null)
         {
