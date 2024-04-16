@@ -22,8 +22,8 @@
             </a>
 
             <ul class="dropdown-menu dropdown-menu-right">
-                <li><a class="dropdown-item" href="#" @onclick="() => visitModalParentRef.visitModalRef.Open()" @onclick:preventDefault="true">Add A Visit</a></li>
-                <li><a class="dropdown-item" href="#" @onclick="() => commentModalParentRef.commentModalRef.Open()" @onclick:preventDefault="true">Add A Comment</a></li>
+                    <li><a class="dropdown-item" href="#" @onclick="() => HandleOpenModal(isVisitEntry: true)" @onclick:preventDefault="true">Add A Visit</a></li>
+                    <li><a class="dropdown-item" href="#" @onclick="() => HandleOpenModal(isVisitEntry: false)" @onclick:preventDefault="true">Add A Comment</a></li>
             </ul>
         </div>
     </RadzenStack>
@@ -45,9 +45,19 @@
             <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Type" Title="T" Width="70px"></RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="TreatmentCardGrid" Property="Asst" Title="ASST">
                 <Template Context="treatment">
-                    <span @ondblclick="() => OpenEditVisitModal(treatment)">
-                        @treatment.Asst
-                    </span>
+                    @if (treatment.Type == "V")
+                    {
+                        <span @ondblclick="() => OpenEditVisitModal(treatment)">
+                            @treatment.Asst
+                        </span>
+                    }
+                    else
+                    {
+                        <span @ondblclick="async () => await EditRow(treatment)">
+                            @treatment.Asst
+                        </span>
+                    }
+                    
                 </Template>
             </RadzenDataGridColumn>
 
@@ -76,10 +86,9 @@
                     else if (treatment.Type == "C")
                     {
                         <RadzenTextArea @ref="radzenTextAreaRef" 
-                                              Rows="1" 
-                                              @oninput="@(() => AutoResizeTextAreaHeight(radzenTextAreaRef.Element))" 
+                                              Rows="1"  
                                               @bind-Value="treatment.Comment" 
-                                              Style="width:20rem; display: block;" 
+                                              Style="width:30rem; display: block;" 
                                               Name="Comment" />
                     }
                 </EditTemplate>

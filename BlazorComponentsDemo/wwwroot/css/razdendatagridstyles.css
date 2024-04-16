@@ -1,20 +1,15 @@
-﻿th.rz-unselectable-text.rz-sortable-column.rz-text-align-left {
-    background-color: white !important;
-}
-
-th.rz-unselectable-text.rz-text-align-left {
-    background-color: white !important;
-}
-
-
+﻿th.rz-unselectable-text.rz-text-align-left,
+th.rz-unselectable-text.rz-sortable-column.rz-text-align-left
 th.rz-unselectable-text.rz-frozen-cell.rz-text-align-center,
 .rz-datatable-thead th .rz-column-title, .rz-grid-table thead th .rz-column-title,
 .rz-sortable-column .rzi-sort {
     background-color: white !important;
+    color: #007ac3 !important;
 }
 
 
-a.rz-paginator-page.rz-paginator-element.rz-state-active {
+a.rz-paginator-page.rz-paginator-element.rz-state-active,
+.rz-paginator-icon {
     color: #007ac3 !important;
 }
 
@@ -28,13 +23,10 @@ i.rzi-circle-o-notch {
     opacity: 0.5;
 }
 
-.rz-paginator-icon {
-    color: #007ac3 !important;
-}
-
 .rz-grid-table-fixed .rz-frozen-cell {
     border-left: 0.5px solid #d9e1ea !important;
     box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.12);
+    background-color: white;
 }
 
 .datagridspinnercontainer {

@@ -130,10 +130,41 @@ namespace BlazorComponentsDemo.Pages.TreatmentCardGridComponents
             treatmentCardEntryModel = new TreatmentCardGrid();
         }
 
-        [JSInvokable]
-        protected async Task AutoResizeTextAreaHeight(ElementReference element)
+        protected void HandleOpenModal(bool isVisitEntry)
         {
-            await JSRuntime.InvokeAsync<object>("window.autoResizeTextAreaHeight", element);
+            treatmentCardEntryModel = new TreatmentCardGrid();
+
+            if (isVisitEntry)
+            {
+                visitModalParentRef.visitModalRef.Open();
+            }
+            else
+            {
+                commentModalParentRef.commentModalRef.Open();
+            }
         }
+
+        //protected async Task AutoResizeTextAreaHeight(ElementReference element)
+        //{
+        //    await JSRuntime.InvokeAsync<object>("window.autoResizeTextAreaHeight", element);
+        //}
+
+        //private bool canExecute = true;
+
+        //protected async Task AutoResizeTextAreaHeight(ElementReference element)
+        //{
+        //    if (!canExecute)
+        //    {
+        //        return;
+        //    }
+
+        //    canExecute = false;
+
+        //    await JSRuntime.InvokeAsync<object>("window.autoResizeTextAreaHeight", element);
+
+        //    await Task.Delay(150);
+
+        //    canExecute = true;
+        //}
     }
 }

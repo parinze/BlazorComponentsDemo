@@ -87,7 +87,7 @@ namespace BlazorComponentsDemo.ComponentsLibrary
 		[Parameter] public Action<DataGridCellRenderEventArgs<TType>> CellRender { get; set; } = (args) => { };
 
         /// <summary>
-        /// A optional render fragment to include custom columns in the data grid.
+        /// An optional render fragment to include custom columns in the data grid.
         /// </summary>
         [Parameter] public RenderFragment? CustomColumnsMarkup { get; set; }
 
