@@ -1,0 +1,90 @@
+﻿@page "/treatmentgridlayoutchooser"
+
+<div class="treatment-grid-layout-tab-group">
+    @* <div class="treatment-grid-layout-tab-container selected-tab">
+        <div class="treatment-grid-layout-tab">Ortho</div>
+    </div>
+    <div class="treatment-grid-layout-tab-container">
+        <div class="treatment-grid-layout-tab">TMJ</div>
+    </div>
+    <div class="treatment-grid-layout-tab-container">
+        <div class="treatment-grid-layout-tab">Trx</div>
+    </div>
+    <div class="treatment-grid-layout-tab-container">
+        <div class="treatment-grid-layout-tab">All</div>
+    </div> *@
+
+    @foreach (var layout in Layouts)
+    {
+        <div class="treatment-grid-layout-tab-container @(SelectedLayoutId == layout.Id ? "selected-tab" : "")">
+            <div class="treatment-grid-layout-tab" @onclick="() => HandleLayoutSelection(layout.Id)">@(layout.Name)</div>
+        </div>
+    }
+</div>
+
+@code {
+    public List<LayoutDto> Layouts { get; set; } = new List<LayoutDto>();
+    public Guid SelectedLayoutId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await Task.Delay(1000);
+
+        Layouts = new List<LayoutDto>()
+        {
+            new LayoutDto()
+            {
+                Id = new Guid("64f1c39a-a830-4936-94f5-328b3ad1ffb5"),
+                Name = "Ortho ",
+                Description = "Default Treatment Card Layout - Ortho",
+                Index = 0,
+                TabColor = "#FFC080",
+                ForeColor = "#000000",
+                OleColor = 8438015
+            },
+            new LayoutDto()
+            {
+                Id = new Guid("bdf4dc72-29eb-4792-830c-98d700e232bd"),
+                Name = "TMJ ",
+                Description = "TMJ Treatment Card",
+                Index = 1,
+                TabColor = "#FFFF80",
+                ForeColor = "#000000",
+                OleColor = 8454143
+            },
+            new LayoutDto()
+            {
+                Id = new Guid("26dc7911-6236-4eb6-97cc-a70700da4edc"),
+                Name = "TRX",
+                Description = "TRX Treatment Card",
+                Index = 2,
+                TabColor = "#00BFFF",
+                ForeColor = "#000000",
+                OleColor = 16760576
+            },
+        };
+
+        Layouts.Add(
+            new LayoutDto()
+            {
+                Id = Guid.Empty,
+                Name = "All",
+                Description = "All Treatment Card Grid Layouts",
+                Index = Layouts.Max(l => l.Index) + 1,
+                TabColor = "",
+                ForeColor = "",
+                OleColor = 0
+            }
+        );
+
+        SelectedLayoutId = Layouts.FirstOrDefault()?.Id ?? Guid.Empty;
+    }
+
+    private void HandleLayoutSelection(Guid layoutId)
+    {
+        Console.WriteLine($"Selected layout: {layoutId}");
+        SelectedLayoutId = layoutId;
+    }
+}
