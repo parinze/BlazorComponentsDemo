@@ -1,0 +1,16 @@
+﻿@page "/booleancheckbox"
+
+@using Microsoft.AspNetCore.Components.Forms
+
+<h3>Approval Checkbox</h3>
+
+<div class="form-check">
+    <InputCheckbox @bind-Value="IsApproved" class="form-check-input" id="approvalCheckbox" />
+    <label class="form-check-label" for="approvalCheckbox">Approved</label>
+</div>
+
+<p>Approved: @IsApproved</p>
+
+@code {
+    private bool IsApproved { get; set; } = false;
+}

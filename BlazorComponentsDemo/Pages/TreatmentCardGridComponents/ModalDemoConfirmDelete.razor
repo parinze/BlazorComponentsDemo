@@ -1,0 +1,22 @@
+﻿<ModalDemo @ref="@confirmDeleteModalRef" Title="Delete Treatment Card Entry">
+    <div class="row mb-2" style="display:flex;justify-content:center">
+        <img src="assets/images/Warning32.png" width="32" height="32" />
+        <div class="col-10">Are you sure you want to delete this treatment entry?</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" @onclick="() => confirmDeleteModalRef.Close()">No</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" @onclick="DeleteEntry">Yes</button>
+    </div>
+</ModalDemo>
+
+@code {
+    public ModalDemo confirmDeleteModalRef;
+
+    [Parameter] public EventCallback OnConfirmedDelete { get; set; }
+
+    private async Task DeleteEntry()
+    {
+        confirmDeleteModalRef.Close();
+        await OnConfirmedDelete.InvokeAsync();
+    }
+}

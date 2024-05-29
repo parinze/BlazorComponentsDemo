@@ -1,0 +1,20 @@
+﻿@page "/treatmentgridconfirmdeletemodal"
+
+<h3>ConfirmDeleteModal</h3>
+
+<ModalDemoConfirmDelete @ref="confirmDeleteModalParentRef" OnConfirmedDelete="HandleDeleteEntry" />
+<button class="btn btn-primary" @onclick="@((args) => OpenDeleteConfirmationModal(args))">Delete</button>
+
+@code {
+    public ModalDemoConfirmDelete confirmDeleteModalParentRef;
+
+    public void OpenDeleteConfirmationModal(MouseEventArgs args)
+    {
+        confirmDeleteModalParentRef.confirmDeleteModalRef.Open();
+    }
+
+    public void HandleDeleteEntry()
+    {
+        Console.WriteLine("DELETE CONFIRMED");
+    }
+}

@@ -24,11 +24,11 @@
         cursor: pointer;
         color: #000000 !important;
         border-bottom: 1px solid #000000;
-        padding-bottom: 3px;
+        padding-bottom: 5px;
     }
 
 .treatment-grid-layout-tab-container.selected-tab:not(:hover) {
-    border-bottom: 1px solid #007ac3;
+    border-bottom: 4px solid #007ac3;
 }
 
     .treatment-grid-layout-tab-container.selected-tab .treatment-grid-layout-tab {
@@ -38,5 +38,6 @@
     .treatment-grid-layout-tab-container.selected-tab .treatment-grid-layout-tab:hover {
         color: #000000 !important;
         border-bottom: 1px solid #000000;
+        padding-bottom: 5px;
     }
 
